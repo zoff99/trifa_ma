@@ -739,7 +739,7 @@ public class MessageListActivity extends AppCompatActivity
                             }
                             catch(Exception e)
                             {
-                                ChatUI.recordButtonState(v, R.drawable.baseline_keyboard_voice_24, false);
+                                ChatUI.recordButtonState(v, R.drawable.chat_ic_mic, false);
                                 set_recording_pop_visibilty_s(false);
                                 ml_is_recording = false;
                                 ml_is_rec_ok = false;
@@ -759,7 +759,7 @@ public class MessageListActivity extends AppCompatActivity
                                 }
                                 catch(Exception e)
                                 {
-                                    ChatUI.recordButtonState(v, R.drawable.baseline_keyboard_voice_24, false);
+                                    ChatUI.recordButtonState(v, R.drawable.chat_ic_mic, false);
                                     set_recording_pop_visibilty_s(false);
                                     ml_is_recording = false;
                                     ml_is_rec_ok = false;
@@ -778,7 +778,7 @@ public class MessageListActivity extends AppCompatActivity
                                 if (count > 50)
                                 {
                                     // HINT: just in case of an endless loop, we return here
-                                    ChatUI.recordButtonState(v, R.drawable.baseline_keyboard_voice_24, false);
+                                    ChatUI.recordButtonState(v, R.drawable.chat_ic_mic, false);
                                     set_recording_pop_visibilty_s(false);
                                     ml_is_recording = false;
                                     ml_is_rec_ok = false;
@@ -797,7 +797,7 @@ public class MessageListActivity extends AppCompatActivity
                                 Log.i(TAG, "onCreate:record_audio:prepare failed");
                                 ChatUI.audioToast(MessageListActivity.this,
                                                   MessageListActivity.this.getString(R.string.chat_audio_start_failed));
-                                ChatUI.recordButtonState(v, R.drawable.baseline_keyboard_voice_24, false);
+                                ChatUI.recordButtonState(v, R.drawable.chat_ic_mic, false);
                                 set_recording_pop_visibilty_s(false);
                                 ml_is_recording = false;
                                 ml_is_rec_ok = false;
@@ -811,7 +811,7 @@ public class MessageListActivity extends AppCompatActivity
                                 Log.i(TAG, "onCreate:record_audio:start failed");
                                 ChatUI.audioToast(MessageListActivity.this,
                                                   MessageListActivity.this.getString(R.string.chat_audio_start_failed));
-                                ChatUI.recordButtonState(v, R.drawable.baseline_keyboard_voice_24, false);
+                                ChatUI.recordButtonState(v, R.drawable.chat_ic_mic, false);
                                 set_recording_pop_visibilty_s(false);
                                 ml_is_recording = false;
                                 ml_is_rec_ok = false;
@@ -838,7 +838,7 @@ public class MessageListActivity extends AppCompatActivity
                                     ml_is_recording = false;
                                 }
                             }
-                            ChatUI.recordButtonState(v, R.drawable.baseline_pending_24, false);
+                            ChatUI.recordButtonState(v, R.drawable.chat_ic_pending, false);
                             set_recording_pop_visibilty_s(false);
                             int rec_result = mAudioRecorder.stopRecord();
                             Log.i(TAG, "onCreate:record_audio:finished:res=" + rec_result);
@@ -852,7 +852,7 @@ public class MessageListActivity extends AppCompatActivity
                             Log.i(TAG, "onCreate:record_audio:EE:" + e.getMessage());
                             e.printStackTrace();
                         }
-                        ChatUI.recordButtonState(v, R.drawable.baseline_keyboard_voice_24, false);
+                        ChatUI.recordButtonState(v, R.drawable.chat_ic_mic, false);
                         set_recording_pop_visibilty_s(false);
 
                         final boolean rec_ok = ml_is_rec_ok;

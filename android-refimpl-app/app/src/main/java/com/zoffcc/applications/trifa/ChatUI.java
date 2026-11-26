@@ -366,10 +366,14 @@ final class ChatUI
                 if (recording)
                 {
                     button.setBackgroundColor(Color.parseColor("#FF0000"));
+                    if (button instanceof ImageButton) ((ImageButton) button).setColorFilter(Color.WHITE);
                 }
                 else
                 {
-                    select(button, false);
+                    // Restore the normal composer action-button style. Using select()
+                    // here would leave the mic button transparent after recording.
+                    button.setBackgroundResource(R.drawable.chat_send_bg);
+                    if (button instanceof ImageButton) ((ImageButton) button).setColorFilter(Color.WHITE);
                 }
             }
             catch (Exception ignored)
