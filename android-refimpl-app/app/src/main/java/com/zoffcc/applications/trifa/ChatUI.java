@@ -19,6 +19,7 @@ import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.Typeface;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -541,6 +542,20 @@ final class ChatUI
             }
             peer.setTypeface(peerTypeface);
             peer.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
+            if (!night(c))
+            {
+                GradientDrawable chip = new GradientDrawable();
+                chip.setShape(GradientDrawable.RECTANGLE);
+                chip.setCornerRadius(dp(c, 9));
+                chip.setColor(color(c, R.color.chat_peer_chip));
+                peer.setBackground(chip);
+                peer.setPadding(dp(c, 7), dp(c, 1), dp(c, 7), dp(c, 2));
+            }
+            else
+            {
+                peer.setBackground(null);
+                peer.setPadding(0, 0, 0, dp(c, 2));
+            }
         }
         if (icon != null)
         {
@@ -627,16 +642,14 @@ final class ChatUI
      * white until it hit a high contrast ratio. That desaturated every peer into
      * a near-identical muddy tone, so the colors were hard to tell apart.
      *
-     * The light palette is calculated in OKLab. Candidate colors are restricted
-     * to sRGB colors with at least 4.5:1 contrast against white, then 12 colors
-     * are chosen to maximize the minimum perceptual distance between any pair.
-     * The resulting minimum OKLab distance is about 0.146, so no two sender
-     * colors collapse into the same green/grey impression. The dark palette is
-     * unchanged.
+     * In light mode the sender label is drawn on a soft grey rounded chip, so
+     * the palette is tuned for that chip instead of bare white. The colors keep
+     * at least 4.5:1 contrast on the chip and remain perceptually separated.
+     * The dark palette is unchanged.
      */
     private static final int[] SENDER_LIGHT = {
-            0xFFA2002C, 0xFFE42700, 0xFFA56802, 0xFF0E8A00, 0xFF006453, 0xFF017DB4,
-            0xFF0000FE, 0xFF635CFF, 0xFF6F00C3, 0xFFC000F1, 0xFF9F008A, 0xFFE50085
+            0xFF920028, 0xFFCD2300, 0xFF945E02, 0xFF0D7C00, 0xFF005A4B, 0xFF0170A2,
+            0xFF0000E5, 0xFF5953E6, 0xFF6400B0, 0xFFAD00D9, 0xFF8F007C, 0xFFCE0078
     };
     private static final int[] SENDER_DARK = {
             0xFFFF8282, 0xFFFF8754, 0xFFFFD70D, 0xFFD7FF0D, 0xFF72FF0D, 0xFF0DFFAE,
