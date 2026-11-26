@@ -46,6 +46,7 @@ import androidx.appcompat.widget.SearchView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.ColorUtils;
+import androidx.recyclerview.widget.RecyclerView;
 
 /** Presentation only: existing adapters keep ownership of data and click handlers. */
 final class ChatUI
@@ -313,10 +314,32 @@ final class ChatUI
 
     static void select(View container, boolean selected)
     {
+        if (container == null) return;
+        // Clear any legacy selection tint on the clicked/bound container itself.
         container.setBackgroundColor(Color.TRANSPARENT);
-        View surface = container.getParent() instanceof View ? (View) container.getParent() : container;
-        View row = surface.getParent() instanceof View ? (View) surface.getParent() : surface;
+        final View row = messageRow(container);
+        if (row == null) return;
         row.setBackgroundColor(selected ? color(row, R.color.chat_selection) : Color.TRANSPARENT);
+    }
+
+    /**
+     * Find the RecyclerView item root for any descendant view. Message layouts
+     * have different nesting depths (text rows use a swipe surface, file rows
+     * do not), so a fixed number of getParent() calls can land on the
+     * RecyclerView itself and tint the whole list.
+     */
+    static View messageRow(View view)
+    {
+        if (view == null) return null;
+        View current = view;
+        while (current.getParent() instanceof View)
+        {
+            if (current.getParent() instanceof RecyclerView) return current;
+            current = (View) current.getParent();
+        }
+        // Fallback for callers outside a RecyclerView: never climb into the
+        // activity/window root; keep the change scoped to the supplied view.
+        return view;
     }
 
     /** Check permission and temp folder before starting an audio recording. */
