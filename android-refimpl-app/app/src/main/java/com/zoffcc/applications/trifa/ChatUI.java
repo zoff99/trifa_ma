@@ -648,8 +648,14 @@ final class ChatUI
      * The dark palette is unchanged.
      */
     private static final int[] SENDER_LIGHT = {
-            0xFF920028, 0xFFCD2300, 0xFF945E02, 0xFF0D7C00, 0xFF005A4B, 0xFF0170A2,
-            0xFF0000E5, 0xFF5953E6, 0xFF6400B0, 0xFFAD00D9, 0xFF8F007C, 0xFFCE0078
+                        0xFFE60000, // 1. Pure Bright Red (4.63:1)
+                        0xFFCC4B00, // 2. Vivid Burnt Orange (4.76:1)
+                        0xFF198700, // 3. Pure Bright Green (4.69:1)
+                        0xFF008080, // 4. True Teal (4.75:1)
+                        0xFF0055FF, // 5. Electric Cobalt Blue (5.87:1)
+                        0xFF7B00E6, // 6. Bright Electric Violet (6.52:1)
+                        0xFFC7007D, // 7. Deep Fuchsia Magenta (5.58:1)
+                        0xFF5D4037  // 8. Rich Dark Chocolate (9.32:1)
     };
     private static final int[] SENDER_DARK = {
             0xFFFF8282, 0xFFFF8754, 0xFFFFD70D, 0xFFD7FF0D, 0xFF72FF0D, 0xFF0DFFAE,
