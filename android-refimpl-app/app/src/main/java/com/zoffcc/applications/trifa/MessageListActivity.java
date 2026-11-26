@@ -363,6 +363,8 @@ public class MessageListActivity extends AppCompatActivity
         ml_status_icon = (ImageView) findViewById(R.id.ml_status_icon);
         ml_phone_icon = (ImageButton) findViewById(R.id.ml_phone_icon);
         ml_video_icon = (ImageButton) findViewById(R.id.ml_video_icon);
+        ml_phone_icon.setOnClickListener(v -> start_audio_call_to_friend(v));
+        ml_video_icon.setOnClickListener(v -> start_video_call_to_friend(v));
         ml_attach_button_01 = (ImageButton) findViewById(R.id.ml_button_01);
         ml_button_recaudio = (ImageButton) findViewById(R.id.ml_button_recaudio);
         ml_button_recaudio.setBackgroundResource(R.drawable.chat_send_bg);
@@ -2048,6 +2050,16 @@ public class MessageListActivity extends AppCompatActivity
         set_debug_text("_AUDIO_");
 
         Log.i(TAG, "toxav_call:Callstate.audio_call = true");
+        start_call_to_friend(view);
+    }
+
+    public void start_video_call_to_friend(View view)
+    {
+        Log.i(TAG, "start_call_to_friend_real:audio_video");
+        Callstate.audio_call = false;
+        set_debug_text("_VIDEO_");
+
+        Log.i(TAG, "toxav_call:Callstate.audio_call = false");
         start_call_to_friend(view);
     }
 
