@@ -24,10 +24,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Configuration;
-import android.graphics.Color;
 import android.util.Log;
-import android.widget.RemoteViews;
 
 import androidx.core.app.NotificationCompat;
 
@@ -35,7 +32,6 @@ import static android.content.Context.NOTIFICATION_SERVICE;
 import static com.zoffcc.applications.trifa.MainActivity.PREF__orbot_enabled;
 import static com.zoffcc.applications.trifa.MainActivity.context_s;
 import static com.zoffcc.applications.trifa.MainActivity.nmn3;
-import static com.zoffcc.applications.trifa.MainActivity.notification_view;
 import static com.zoffcc.applications.trifa.TRIFAGlobals.CONNECTION_STATUS_MANUAL_LOGOUT;
 import static com.zoffcc.applications.trifa.TRIFAGlobals.bootstrapping;
 import static com.zoffcc.applications.trifa.TrifaToxService.manually_logged_out;
@@ -45,16 +41,6 @@ public class HelperToxNotification
     private static final String TAG = "trifa.Hlp.ToxNoti";
     static int ONGOING_NOTIFICATION_ID = 1030;
 
-    // Helper method to get the correct text color for Dark/Light mode
-    private static int getSystemTextColor(Context c) {
-        int nightModeFlags = c.getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
-        if (nightModeFlags == Configuration.UI_MODE_NIGHT_YES) {
-            return Color.WHITE; // Standard light text for Dark Mode
-        } else {
-            return Color.parseColor("#DE000000"); // Standard Material dark text (87% opacity) for Light Mode
-        }
-    }
-
     static Notification tox_notification_setup(Context c, NotificationManager nmn2)
     {
         Log.i(TAG, "tox_notification_setup:start");
@@ -63,37 +49,14 @@ public class HelperToxNotification
         notificationIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         PendingIntent pendingIntent = PendingIntent.getActivity(c, 0, notificationIntent, PendingIntent.FLAG_IMMUTABLE);
 
-        notification_view = new RemoteViews(c.getPackageName(), R.layout.custom_notification);
-        Log.i(TAG, "contentView=" + notification_view);
-        notification_view.setImageViewResource(R.id.image, R.drawable.circle_red);
-
-        // Apply dynamic system text color for Dark/Light mode compatibility
-        try {
-            notification_view.setTextColor(R.id.title, getSystemTextColor(c));
-        } catch (Exception e_text_color) {
-            Log.i(TAG, "e_text_color:EE01:" + e_text_color.getMessage());
-        }
-
+        String title;
         if (PREF__orbot_enabled) {
-            notification_view.setTextViewText(R.id.title, "Tox Service: OFFLINE  [Tor Proxy]");
+            title = "Tox Service: OFFLINE  [Tor Proxy]";
         } else {
-            notification_view.setTextViewText(R.id.title, "Tox Service: OFFLINE");
+            title = "Tox Service: OFFLINE";
         }
-        notification_view.setTextViewText(R.id.text, "");
 
-        // Modern NotificationCompat Builder (Automatically handles API 26+ Channels)
-        NotificationCompat.Builder b = new NotificationCompat.Builder(c, MainActivity.channelId_toxservice)
-                .setSmallIcon(R.drawable.circle_red_notification)
-                .setCustomContentView(notification_view)
-                .setStyle(new NotificationCompat.DecoratedCustomViewStyle()) // Wraps your custom view in the modern system header
-                .setOngoing(true) // Permanent foreground service notification
-                .setOnlyAlertOnce(true)
-                .setSilent(true) // Prevents sound/vibration spam on modern Android
-                .setCategory(NotificationCompat.CATEGORY_SERVICE)
-                .setPriority(NotificationCompat.PRIORITY_LOW)
-                .setContentIntent(pendingIntent);
-
-        Notification notification2 = b.build();
+        Notification notification2 = build_notification(c, pendingIntent, 0, title);
 
         Log.i(TAG, "tox_notification_setup:end");
         return notification2;
@@ -126,74 +89,67 @@ public class HelperToxNotification
         notificationIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         PendingIntent pendingIntent = PendingIntent.getActivity(c, 0, notificationIntent, PendingIntent.FLAG_IMMUTABLE);
 
-        // Re-apply text color in case the system theme changed while running
-        try {
-            notification_view.setTextColor(R.id.title, getSystemTextColor(c));
-        } catch (Exception ignored) {}
-
+        String title;
         if ((manually_logged_out) || (a_TOXCONNECTION == CONNECTION_STATUS_MANUAL_LOGOUT))
         {
-            notification_view.setImageViewResource(R.id.image, R.drawable.circle_red);
-            notification_view.setTextViewText(R.id.title, "Tox Service: OFFLINE manually");
+            title = "Tox Service: OFFLINE manually";
         }
         else if (bootstrapping)
         {
             Log.i(TrifaToxService.TAG, "change_notification_fg:bootstrapping=true");
-            notification_view.setImageViewResource(R.id.image, R.drawable.circle_orange);
             if (PREF__orbot_enabled) {
-                notification_view.setTextViewText(R.id.title, "Tox Service: Bootstrapping [Tor Proxy] " + message);
+                title = "Tox Service: Bootstrapping [Tor Proxy] " + message;
             } else {
-                notification_view.setTextViewText(R.id.title, "Tox Service: Bootstrapping " + message);
+                title = "Tox Service: Bootstrapping " + message;
             }
         }
         else if (a_TOXCONNECTION == 0)
         {
-            notification_view.setImageViewResource(R.id.image, R.drawable.circle_red);
             String offline_text = "OFFLINE";
             if (battery_saving_mode_active) {
                 offline_text = "Battery Saving";
             }
             if (PREF__orbot_enabled) {
-                notification_view.setTextViewText(R.id.title, "Tox Service: " + offline_text + " [Tor Proxy] " + message);
+                title = "Tox Service: " + offline_text + " [Tor Proxy] " + message;
             } else {
-                notification_view.setTextViewText(R.id.title, "Tox Service: " + offline_text + " " + message);
+                title = "Tox Service: " + offline_text + " " + message;
             }
         }
         else if (PREF__orbot_enabled)
         {
-            notification_view.setImageViewResource(R.id.image, R.drawable.circle_torproxy);
-            notification_view.setTextViewText(R.id.title, "Tox Service: ONLINE [Tor Proxy] " + message);
+            title = "Tox Service: ONLINE [Tor Proxy] " + message;
         }
         else if (a_TOXCONNECTION == 1)
         {
-            notification_view.setImageViewResource(R.id.image, R.drawable.circle_green);
-            notification_view.setTextViewText(R.id.title, "Tox Service: ONLINE [TCP] " + message);
+            title = "Tox Service: ONLINE [TCP] " + message;
         }
         else
         {
-            notification_view.setImageViewResource(R.id.image, R.drawable.circle_green);
-            notification_view.setTextViewText(R.id.title, "Tox Service: ONLINE [UDP] " + message);
+            title = "Tox Service: ONLINE [UDP] " + message;
         }
 
-        notification_view.setTextViewText(R.id.text, "");
+        try {
+            nmn2.notify(ONGOING_NOTIFICATION_ID, build_notification(c, pendingIntent, a_TOXCONNECTION, title));
+        } catch(Exception ignored) {
+        }
+        Log.i(TAG, "tox_notification_change:end");
+    }
 
-        // Build using modern NotificationCompat (No more messy SDK version branching!)
-        NotificationCompat.Builder b = new NotificationCompat.Builder(c, MainActivity.channelId_toxservice)
+    private static Notification build_notification(Context c, PendingIntent pendingIntent, int a_TOXCONNECTION, String title)
+    {
+        // Use the standard system notification template instead of a custom
+        // RemoteViews layout. The OS supplies the correct background and text
+        // colors for light/dark mode and for vendor notification styles.
+        return new NotificationCompat.Builder(c, MainActivity.channelId_toxservice)
                 .setSmallIcon(getSmallIconForState(a_TOXCONNECTION))
-                .setCustomContentView(notification_view)
-                .setStyle(new NotificationCompat.DecoratedCustomViewStyle())
+                .setContentTitle(title)
                 .setOngoing(true)
                 .setOnlyAlertOnce(true)
                 .setSilent(true)
                 .setCategory(NotificationCompat.CATEGORY_SERVICE)
                 .setPriority(NotificationCompat.PRIORITY_LOW)
-                .setContentIntent(pendingIntent);
-
-        try {
-            nmn2.notify(ONGOING_NOTIFICATION_ID, b.build());
-        } catch(Exception ignored) {
-        }
-        Log.i(TAG, "tox_notification_change:end");
+                .setContentIntent(pendingIntent)
+                .build();
     }
 
     // Helper to keep the switch statement clean

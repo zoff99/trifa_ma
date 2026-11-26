@@ -72,7 +72,6 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
-import android.widget.RemoteViews;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -422,7 +421,6 @@ public class MainActivity extends AppCompatActivity
     static String channelId_newmessage_silent = null;
     static int NOTIFICATION_ID = 293821038;
     static int WATCHDOG_NOTIFICATION_ID = 696935351;
-    static RemoteViews notification_view = null;
     static volatile FriendListFragment friend_list_fragment = null;
     static volatile MessageListFragment message_list_fragment = null;
     static volatile MessageListActivity message_list_activity = null;
