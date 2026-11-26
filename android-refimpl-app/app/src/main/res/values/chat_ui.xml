@@ -5,12 +5,12 @@
     <color name="chat_header_dark">#172725</color>
     <color name="chat_on_header">#FFFFFF</color>
     <color name="chat_on_header_secondary">#D0E5E1</color>
-    <color name="chat_canvas">#F3F1EA</color>
-    <color name="chat_canvas_dark">#101B19</color>
+    <color name="chat_canvas">#ECE5DD</color>
+    <color name="chat_canvas_dark">#0B141A</color>
     <color name="chat_incoming">#FFFFFF</color>
-    <color name="chat_incoming_dark">#20332F</color>
-    <color name="chat_outgoing">#DCF4E6</color>
-    <color name="chat_outgoing_dark">#174D3D</color>
+    <color name="chat_incoming_dark">#202C33</color>
+    <color name="chat_outgoing">#D9FDD3</color>
+    <color name="chat_outgoing_dark">#005C4B</color>
     <color name="chat_text">#17231F</color>
     <color name="chat_text_dark">#EDF5F2</color>
     <color name="chat_metadata">#586B63</color>
