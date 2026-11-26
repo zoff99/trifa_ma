@@ -1137,6 +1137,17 @@ public class MainActivity extends AppCompatActivity
         SD_CARD_FILES_EXPORT_DIR = getExternalFilesDir(null).getAbsolutePath() + "/vfs_export/";
         SD_CARD_FILES_DEBUG_DIR = getExternalFilesDir(null).getAbsolutePath() + "/debug/";
         SD_CARD_FILES_OUTGOING_WRAPPER_DIR = getExternalFilesDir(null).getAbsolutePath() + "/outgoing/";
+        try
+        {
+            new File(SD_CARD_TMP_DIR).mkdirs();
+            new File(SD_CARD_STATIC_DIR).mkdirs();
+            new File(SD_CARD_FILES_EXPORT_DIR).mkdirs();
+            new File(SD_CARD_FILES_DEBUG_DIR).mkdirs();
+            new File(SD_CARD_FILES_OUTGOING_WRAPPER_DIR).mkdirs();
+        }
+        catch (Exception ignored)
+        {
+        }
         // Log.i(TAG, "SD_CARD_FILES_EXPORT_DIR:" + SD_CARD_FILES_EXPORT_DIR);
         SD_CARD_TMP_DUMMYFILE = HelperGeneric.make_some_static_dummy_file(this.getBaseContext());
         audio_manager_s = (AudioManager) getSystemService(Context.AUDIO_SERVICE);

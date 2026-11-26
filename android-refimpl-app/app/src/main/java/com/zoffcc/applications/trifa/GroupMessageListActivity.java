@@ -1163,6 +1163,11 @@ public class GroupMessageListActivity extends AppCompatActivity
                     return false;
                 }
 
+                if (!ChatUI.prepareAudioRecording(GroupMessageListActivity.this))
+                {
+                    return true;
+                }
+
                 // display_toast("LONG", false, 0);
                 final Thread ml_rec_audio_thread = new Thread()
                 {
@@ -1243,15 +1248,30 @@ public class GroupMessageListActivity extends AppCompatActivity
 
                             File mAudioFile = new File(audio_rec_filename_final);
                             // Log.i(TAG, "onCreate:record_audio:file=" + audio_rec_filename_final);
-                            mAudioRecorder.prepareRecord(MediaRecorder.AudioSource.MIC,
-                                                         MediaRecorder.OutputFormat.MPEG_4,
-                                                         MediaRecorder.AudioEncoder.AAC, 44100, 20000,
-                                                         // HINT: do NOT use higher bitrate. or the file will be too large for NGC FT
-                                                         mAudioFile);
+                            boolean rec_prepare_result = mAudioRecorder.prepareRecord(MediaRecorder.AudioSource.MIC,
+                                                                                       MediaRecorder.OutputFormat.MPEG_4,
+                                                                                       MediaRecorder.AudioEncoder.AAC, 44100, 20000,
+                                                                                       // HINT: do NOT use higher bitrate. or the file will be too large for NGC FT
+                                                                                       mAudioFile);
+                            if (!rec_prepare_result)
+                            {
+                                Log.i(TAG, "onCreate:record_audio:prepare failed");
+                                ChatUI.audioToast(GroupMessageListActivity.this,
+                                                  GroupMessageListActivity.this.getString(R.string.chat_audio_start_failed));
+                                ChatUI.recordButtonState(v, R.drawable.baseline_keyboard_voice_24, false);
+                                set_recording_pop_visibilty_s(false);
+                                ml_is_recording = false;
+                                ml_is_rec_ok = false;
+                                return;
+                            }
+
                             boolean rec_start_result = mAudioRecorder.startRecord();
                             if (!rec_start_result)
                             {
                                 // HINT: some problem on starting the recording
+                                Log.i(TAG, "onCreate:record_audio:start failed");
+                                ChatUI.audioToast(GroupMessageListActivity.this,
+                                                  GroupMessageListActivity.this.getString(R.string.chat_audio_start_failed));
                                 ChatUI.recordButtonState(v, R.drawable.baseline_keyboard_voice_24, false);
                                 set_recording_pop_visibilty_s(false);
                                 ml_is_recording = false;

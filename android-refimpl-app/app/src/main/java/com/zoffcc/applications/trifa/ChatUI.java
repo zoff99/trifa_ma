@@ -10,8 +10,10 @@
  */
 package com.zoffcc.applications.trifa;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Color;
@@ -41,6 +43,7 @@ import java.util.Locale;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.ColorUtils;
 
@@ -314,6 +317,39 @@ final class ChatUI
         View surface = container.getParent() instanceof View ? (View) container.getParent() : container;
         View row = surface.getParent() instanceof View ? (View) surface.getParent() : surface;
         row.setBackgroundColor(selected ? color(row, R.color.chat_selection) : Color.TRANSPARENT);
+    }
+
+    /** Check permission and temp folder before starting an audio recording. */
+    static boolean prepareAudioRecording(final Activity a)
+    {
+        if (a == null) return false;
+        if (ContextCompat.checkSelfPermission(a, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED)
+        {
+            ActivityCompat.requestPermissions(a, new String[]{Manifest.permission.RECORD_AUDIO}, 42001);
+            audioToast(a, a.getString(R.string.chat_audio_permission_needed));
+            return false;
+        }
+        try
+        {
+            final java.io.File dir = new java.io.File(MainActivity.SD_CARD_TMP_DIR);
+            if (!dir.exists() && !dir.mkdirs())
+            {
+                audioToast(a, a.getString(R.string.chat_audio_temp_dir_failed));
+                return false;
+            }
+        }
+        catch (Exception e)
+        {
+            audioToast(a, a.getString(R.string.chat_audio_temp_dir_failed));
+            return false;
+        }
+        return true;
+    }
+
+    static void audioToast(final Activity a, final String msg)
+    {
+        if (a == null || msg == null) return;
+        a.runOnUiThread(() -> HelperGeneric.display_toast_with_context(a, msg, true, 0));
     }
 
     /**

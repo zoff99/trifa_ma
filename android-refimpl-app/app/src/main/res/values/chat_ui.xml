@@ -56,6 +56,9 @@
     <string name="chat_record">Record audio message</string>
     <string name="chat_attachment_state">File transfer state</string>
     <string name="chat_quote_hint">Replying to message</string>
+    <string name="chat_audio_permission_needed">Microphone permission is needed to record audio messages</string>
+    <string name="chat_audio_temp_dir_failed">Could not create the audio recording folder</string>
+    <string name="chat_audio_start_failed">Could not start audio recording</string>
     <!-- Keep the legacy coordinator style valid when Jetifier is disabled. -->
     <style name="Widget.Support.CoordinatorLayout" parent="android:Widget">
         <item name="statusBarBackground">@color/md_black_1000</item>
