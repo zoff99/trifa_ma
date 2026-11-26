@@ -316,6 +316,41 @@ final class ChatUI
         row.setBackgroundColor(selected ? color(row, R.color.chat_selection) : Color.TRANSPARENT);
     }
 
+    /**
+     * Update the audio-record button from a worker thread. All view mutation is
+     * posted to the UI thread; the worker thread only handles recording/file IO.
+     */
+    static void recordButtonState(final View button, final int icon, final boolean recording)
+    {
+        if (button == null) return;
+        final Runnable update = () -> {
+            try
+            {
+                if (button instanceof ImageButton) ((ImageButton) button).setImageResource(icon);
+                if (recording)
+                {
+                    button.setBackgroundColor(Color.parseColor("#FF0000"));
+                }
+                else
+                {
+                    select(button, false);
+                }
+            }
+            catch (Exception ignored)
+            {
+            }
+        };
+        final Context c = button.getContext();
+        if (c instanceof Activity)
+        {
+            ((Activity) c).runOnUiThread(update);
+        }
+        else
+        {
+            button.post(update);
+        }
+    }
+
     /** Called AFTER legacy binding, so recycled rows never retain old colors or alignment. */
     static long messageTimestamp(Message m)
     {

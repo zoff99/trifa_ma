@@ -713,8 +713,7 @@ public class MessageListActivity extends AppCompatActivity
                         String audio_rec_filename_final = null;
                         ml_is_recording = true;
                         ml_is_rec_ok = false;
-                        ((ImageButton) v).setImageResource(R.drawable.baseline_stop_circle_24);
-                        v.setBackgroundColor(Color.parseColor("#FF0000"));
+                        ChatUI.recordButtonState(v, R.drawable.baseline_stop_circle_24, true);
 
                         set_recording_pop_text_s("0:00");
                         set_recording_pop_visibilty_s(true);
@@ -735,8 +734,7 @@ public class MessageListActivity extends AppCompatActivity
                             }
                             catch(Exception e)
                             {
-                                ((ImageButton) v).setImageResource(R.drawable.baseline_keyboard_voice_24);
-                                ChatUI.select(v, false);
+                                ChatUI.recordButtonState(v, R.drawable.baseline_keyboard_voice_24, false);
                                 set_recording_pop_visibilty_s(false);
                                 ml_is_recording = false;
                                 ml_is_rec_ok = false;
@@ -756,8 +754,7 @@ public class MessageListActivity extends AppCompatActivity
                                 }
                                 catch(Exception e)
                                 {
-                                    ((ImageButton) v).setImageResource(R.drawable.baseline_keyboard_voice_24);
-                                    ChatUI.select(v, false);
+                                    ChatUI.recordButtonState(v, R.drawable.baseline_keyboard_voice_24, false);
                                     set_recording_pop_visibilty_s(false);
                                     ml_is_recording = false;
                                     ml_is_rec_ok = false;
@@ -776,8 +773,7 @@ public class MessageListActivity extends AppCompatActivity
                                 if (count > 50)
                                 {
                                     // HINT: just in case of an endless loop, we return here
-                                    ((ImageButton) v).setImageResource(R.drawable.baseline_keyboard_voice_24);
-                                    ChatUI.select(v, false);
+                                    ChatUI.recordButtonState(v, R.drawable.baseline_keyboard_voice_24, false);
                                     set_recording_pop_visibilty_s(false);
                                     ml_is_recording = false;
                                     ml_is_rec_ok = false;
@@ -793,8 +789,7 @@ public class MessageListActivity extends AppCompatActivity
                             if (!rec_start_result)
                             {
                                 // HINT: some problem on starting the recording
-                                ((ImageButton) v).setImageResource(R.drawable.baseline_keyboard_voice_24);
-                                ChatUI.select(v, false);
+                                ChatUI.recordButtonState(v, R.drawable.baseline_keyboard_voice_24, false);
                                 set_recording_pop_visibilty_s(false);
                                 ml_is_recording = false;
                                 ml_is_rec_ok = false;
@@ -821,8 +816,7 @@ public class MessageListActivity extends AppCompatActivity
                                     ml_is_recording = false;
                                 }
                             }
-                            ((ImageButton) v).setImageResource(R.drawable.baseline_pending_24);
-                            ChatUI.select(v, false);
+                            ChatUI.recordButtonState(v, R.drawable.baseline_pending_24, false);
                             set_recording_pop_visibilty_s(false);
                             int rec_result = mAudioRecorder.stopRecord();
                             Log.i(TAG, "onCreate:record_audio:finished:res=" + rec_result);
@@ -836,36 +830,47 @@ public class MessageListActivity extends AppCompatActivity
                             Log.i(TAG, "onCreate:record_audio:EE:" + e.getMessage());
                             e.printStackTrace();
                         }
-                        ((ImageButton) v).setImageResource(R.drawable.baseline_keyboard_voice_24);
-                        ChatUI.select(v, false);
+                        ChatUI.recordButtonState(v, R.drawable.baseline_keyboard_voice_24, false);
                         set_recording_pop_visibilty_s(false);
 
-                        if (ml_is_rec_ok)
+                        final boolean rec_ok = ml_is_rec_ok;
+                        final String audio_rec_filename_final_s = audio_rec_filename_final;
+                        if (rec_ok)
                         {
                             Log.i(TAG, "onCreate:record_audio:------ OK ------");
                             Log.i(TAG, "onCreate:record_audio:------ OK ------");
                             Log.i(TAG, "onCreate:record_audio:------ OK ------");
-
-                            if (audio_rec_filename_final != null)
-                            {
-                                Log.i(TAG, "onCreate:record_audio:add to FT queue ...");
-                                File f2 = new File(audio_rec_filename_final);
-                                add_outgoing_file(v.getContext(), MainActivity.message_list_activity.get_current_friendnum(),
-                                                  f2.getParent(), f2.getName(), null, f2.length(),
-                                                  false, true, true);
-                            }
                         }
 
-                        try
-                        {
-                            if ((audio_rec_filename_final != null) && (audio_rec_filename_final.length() > 10))
+                        // Queue the outgoing audio message and clean up the temp file on
+                        // the UI thread; add_outgoing_file may update the message list.
+                        MessageListActivity.this.runOnUiThread(() -> {
+                            try
                             {
-                                new File(audio_rec_filename_final).delete();
+                                if (rec_ok && audio_rec_filename_final_s != null)
+                                {
+                                    Log.i(TAG, "onCreate:record_audio:add to FT queue ...");
+                                    File f2 = new File(audio_rec_filename_final_s);
+                                    add_outgoing_file(v.getContext(), MainActivity.message_list_activity.get_current_friendnum(),
+                                                      f2.getParent(), f2.getName(), null, f2.length(),
+                                                      false, true, true);
+                                }
                             }
-                        }
-                        catch (Exception ignored)
-                        {
-                        }
+                            catch (Exception ignored)
+                            {
+                            }
+
+                            try
+                            {
+                                if ((audio_rec_filename_final_s != null) && (audio_rec_filename_final_s.length() > 10))
+                                {
+                                    new File(audio_rec_filename_final_s).delete();
+                                }
+                            }
+                            catch (Exception ignored)
+                            {
+                            }
+                        });
                         ml_is_rec_ok = false;
                         ml_is_recording = false;
                     }

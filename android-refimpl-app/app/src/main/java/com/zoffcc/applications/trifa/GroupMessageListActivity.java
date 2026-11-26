@@ -1172,8 +1172,7 @@ public class GroupMessageListActivity extends AppCompatActivity
                         String audio_rec_filename_final = null;
                         ml_is_recording = true;
                         ml_is_rec_ok = false;
-                        ((ImageButton) v).setImageResource(R.drawable.baseline_stop_circle_24);
-                        v.setBackgroundColor(Color.parseColor("#FF0000"));
+                        ChatUI.recordButtonState(v, R.drawable.baseline_stop_circle_24, true);
 
                         set_recording_pop_text_s("0:00");
                         set_recording_pop_visibilty_s(true);
@@ -1194,8 +1193,7 @@ public class GroupMessageListActivity extends AppCompatActivity
                             }
                             catch (Exception e)
                             {
-                                ((ImageButton) v).setImageResource(R.drawable.baseline_keyboard_voice_24);
-                                ChatUI.select(v, false);
+                                ChatUI.recordButtonState(v, R.drawable.baseline_keyboard_voice_24, false);
                                 set_recording_pop_visibilty_s(false);
                                 ml_is_recording = false;
                                 ml_is_rec_ok = false;
@@ -1216,8 +1214,7 @@ public class GroupMessageListActivity extends AppCompatActivity
                                 }
                                 catch (Exception e)
                                 {
-                                    ((ImageButton) v).setImageResource(R.drawable.baseline_keyboard_voice_24);
-                                    ChatUI.select(v, false);
+                                    ChatUI.recordButtonState(v, R.drawable.baseline_keyboard_voice_24, false);
                                     set_recording_pop_visibilty_s(false);
                                     ml_is_recording = false;
                                     ml_is_rec_ok = false;
@@ -1236,8 +1233,7 @@ public class GroupMessageListActivity extends AppCompatActivity
                                 if (count > 50)
                                 {
                                     // HINT: just in case of an endless loop, we return here
-                                    ((ImageButton) v).setImageResource(R.drawable.baseline_keyboard_voice_24);
-                                    ChatUI.select(v, false);
+                                    ChatUI.recordButtonState(v, R.drawable.baseline_keyboard_voice_24, false);
                                     set_recording_pop_visibilty_s(false);
                                     ml_is_recording = false;
                                     ml_is_rec_ok = false;
@@ -1256,8 +1252,7 @@ public class GroupMessageListActivity extends AppCompatActivity
                             if (!rec_start_result)
                             {
                                 // HINT: some problem on starting the recording
-                                ((ImageButton) v).setImageResource(R.drawable.baseline_keyboard_voice_24);
-                                ChatUI.select(v, false);
+                                ChatUI.recordButtonState(v, R.drawable.baseline_keyboard_voice_24, false);
                                 set_recording_pop_visibilty_s(false);
                                 ml_is_recording = false;
                                 ml_is_rec_ok = false;
@@ -1284,8 +1279,7 @@ public class GroupMessageListActivity extends AppCompatActivity
                                     ml_is_recording = false;
                                 }
                             }
-                            ((ImageButton) v).setImageResource(R.drawable.baseline_pending_24);
-                            ChatUI.select(v, false);
+                            ChatUI.recordButtonState(v, R.drawable.baseline_pending_24, false);
                             set_recording_pop_visibilty_s(false);
                             int rec_result = mAudioRecorder.stopRecord();
                             Log.i(TAG, "onCreate:record_audio:finished:res=" + rec_result);
@@ -1299,8 +1293,7 @@ public class GroupMessageListActivity extends AppCompatActivity
                             Log.i(TAG, "onCreate:record_audio:EE:" + e.getMessage());
                             e.printStackTrace();
                         }
-                        ((ImageButton) v).setImageResource(R.drawable.baseline_keyboard_voice_24);
-                        ChatUI.select(v, false);
+                        ChatUI.recordButtonState(v, R.drawable.baseline_keyboard_voice_24, false);
                         set_recording_pop_visibilty_s(false);
 
                         if (ml_is_rec_ok)
