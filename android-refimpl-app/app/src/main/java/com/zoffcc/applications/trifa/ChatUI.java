@@ -18,6 +18,7 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.graphics.Typeface;
 import android.os.Build;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -517,6 +518,9 @@ final class ChatUI
         if (peer != null && peer.getVisibility() == View.VISIBLE)
         {
             peer.setTextColor(senderColor(c, peer.getText().toString()));
+            // Keep sender names legible for low-vision users: bold and not tiny.
+            peer.setTypeface(Typeface.DEFAULT_BOLD);
+            peer.setTextSize(TypedValue.COMPLEX_UNIT_SP, 13);
         }
         if (icon != null)
         {
@@ -596,12 +600,70 @@ final class ChatUI
         }
     }
 
+    /**
+     * Accessible sender-name color.
+     *
+     * The hue is derived from the peer name so different peers remain visually
+     * distinct, but the final color is adjusted until it reaches at least a
+     * 7:1 contrast ratio against the incoming bubble, the chat canvas, and the
+     * selection-tinted variants of both. This keeps names readable in light
+     * and dark mode, including for users with reduced vision.
+     */
     static int senderColor(Context c, String name)
     {
-        int[] light = {0xFF087A83, 0xFF8A4B08, 0xFF7B3F91, 0xFF286B36, 0xFFA03A52, 0xFF345CA0};
-        int[] dark = {0xFF7DD6DC, 0xFFE7B574, 0xFFD2A6E7, 0xFF9AD6A4, 0xFFECA3B4, 0xFFA6BDF0};
-        int hash = name == null ? 0 : name.hashCode();
-        return (night(c) ? dark : light)[Math.floorMod(hash, light.length)];
+        final boolean dark = night(c);
+        final int hash = name == null ? 0 : name.hashCode();
+        // Golden-angle hue distribution avoids clustering nearby names.
+        final float hue = Math.floorMod((long) hash * 137508L, 360000L) / 1000f;
+        final float saturation = dark ? 0.45f : 0.62f;
+        final float value = dark ? 0.95f : 0.55f;
+        final int base = Color.HSVToColor(new float[]{hue, saturation, value});
+        final int[] backgrounds = peerBackgrounds(c, dark);
+        if (minContrast(base, backgrounds) >= 7f) return base;
+
+        // Blend toward the mode's extreme until the contrast target is met.
+        final int extreme = dark ? Color.WHITE : Color.BLACK;
+        float lo = 0f;
+        float hi = 1f;
+        int best = extreme;
+        for (int i = 0; i < 24; i++)
+        {
+            final float mid = (lo + hi) / 2f;
+            final int candidate = ColorUtils.blendARGB(base, extreme, mid);
+            if (minContrast(candidate, backgrounds) >= 7f)
+            {
+                best = candidate;
+                hi = mid;
+            }
+            else
+            {
+                lo = mid;
+            }
+        }
+        return best;
+    }
+
+    private static int[] peerBackgrounds(Context c, boolean dark)
+    {
+        final int incoming = color(c, dark ? R.color.chat_incoming_dark : R.color.chat_incoming);
+        final int canvas = color(c, dark ? R.color.chat_canvas_dark : R.color.chat_canvas);
+        final int selection = color(c, R.color.chat_selection);
+        return new int[]{
+                incoming,
+                canvas,
+                ColorUtils.compositeColors(selection, incoming),
+                ColorUtils.compositeColors(selection, canvas)
+        };
+    }
+
+    private static float minContrast(int foreground, int[] backgrounds)
+    {
+        float min = Float.MAX_VALUE;
+        for (int background : backgrounds)
+        {
+            min = Math.min(min, (float) ColorUtils.calculateContrast(foreground, background));
+        }
+        return min;
     }
 
     abstract static class SimpleWatcher implements TextWatcher
