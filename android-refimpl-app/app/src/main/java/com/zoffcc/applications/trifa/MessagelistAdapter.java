@@ -446,7 +446,8 @@ public class MessagelistAdapter extends RecyclerView.Adapter implements FastScro
                     break;
             }
             ChatUI.decorate(holder.itemView, getItemViewType(position), (m2.direction != 0 || m2.msg_version == 1 ? m2.sent_timestamp : m2.rcvd_timestamp), m2.direction != 0,
-                            m2.read, m2.msg_at_relay, m2.sent_push > 0, MainActivity.selected_messages.contains(m2.id), false, false, 0);
+                            m2.read, m2.msg_at_relay, m2.sent_push > 0, MainActivity.selected_messages.contains(m2.id), false, false, 0,
+                            m2.tox_friendpubkey);
             if (getItemViewType(position) != Message_model.PAGING_OLDER && getItemViewType(position) != Message_model.PAGING_NEWER)
             ChatUI.bindDate(holder.itemView, getDateHeaderText(position), position > 0 ? getDateHeaderText(position - 1) : null,
                             (m2.direction != 0 || m2.msg_version == 1 ? m2.sent_timestamp : m2.rcvd_timestamp), m2.direction != 0);

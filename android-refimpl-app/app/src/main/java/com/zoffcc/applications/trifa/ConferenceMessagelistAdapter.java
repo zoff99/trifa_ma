@@ -263,7 +263,8 @@ public class ConferenceMessagelistAdapter extends RecyclerView.Adapter implement
                     break;
             }
             ChatUI.decorate(holder.itemView, getItemViewType(position), m2.sent_timestamp, m2.direction != 0,
-                            m2.read, false, false, MainActivity.selected_conference_messages.contains(m2.id), true, false, 0);
+                            m2.read, false, false, MainActivity.selected_conference_messages.contains(m2.id), true, false, 0,
+                            m2.tox_peerpubkey);
             if (getItemViewType(position) != Message_model.PAGING_OLDER && getItemViewType(position) != Message_model.PAGING_NEWER)
             ChatUI.bindDate(holder.itemView, getDateHeaderText(position), position > 0 ? getDateHeaderText(position - 1) : null,
                             m2.sent_timestamp, m2.direction != 0);

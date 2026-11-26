@@ -57,9 +57,14 @@ final class ChatUI
     static final int GROUP = 2;
     private ChatUI() {}
 
+    static int color(Context c, int id)
+    {
+        return ContextCompat.getColor(c, id);
+    }
+
     static int color(View v, int id)
     {
-        return ContextCompat.getColor(v.getContext(), id);
+        return color(v.getContext(), id);
     }
 
     static boolean night(Context c)
@@ -442,7 +447,8 @@ final class ChatUI
     }
 
     static void decorate(View row, int type, long timestamp, boolean outgoing, boolean read,
-                         boolean relay, boolean push, boolean selected, boolean multiUser, boolean synced, int confirmations)
+                         boolean relay, boolean push, boolean selected, boolean multiUser, boolean synced, int confirmations,
+                         String peerPubkey)
     {
         final Context c = row.getContext();
         final boolean text = type == Message_model.TEXT_INCOMING_NOT_READ || type == Message_model.TEXT_OUTGOING_NOT_READ || type == Message_model.TEXT_OUTGOING_HAVE_READ;
@@ -517,7 +523,7 @@ final class ChatUI
         final TextView peer = row.findViewById(R.id.peer_name_text);
         if (peer != null && peer.getVisibility() == View.VISIBLE)
         {
-            peer.setTextColor(senderColor(c, peer.getText().toString()));
+            peer.setTextColor(senderColor(c, peerPubkey));
             // Keep sender names legible for low-vision users: bold and not tiny.
             peer.setTypeface(Typeface.DEFAULT_BOLD);
             peer.setTextSize(TypedValue.COMPLEX_UNIT_SP, 13);
@@ -603,16 +609,18 @@ final class ChatUI
     /**
      * Accessible sender-name color.
      *
-     * The hue is derived from the peer name so different peers remain visually
-     * distinct, but the final color is adjusted until it reaches at least a
-     * 7:1 contrast ratio against the incoming bubble, the chat canvas, and the
-     * selection-tinted variants of both. This keeps names readable in light
-     * and dark mode, including for users with reduced vision.
+     * The hue is derived from the peer public key, never from the display name,
+     * so a peer keeps the same color when their name changes. The final color is
+     * adjusted until it reaches at least a 7:1 contrast ratio against the
+     * incoming bubble, the chat canvas, and the selection-tinted variants of
+     * both. This keeps names readable in light and dark mode, including for
+     * users with reduced vision.
      */
-    static int senderColor(Context c, String name)
+    static int senderColor(Context c, String peerPubkey)
     {
         final boolean dark = night(c);
-        final int hash = name == null ? 0 : name.hashCode();
+        final String key = peerPubkey == null ? "" : peerPubkey.trim().toLowerCase(Locale.ROOT);
+        final int hash = key.hashCode();
         // Golden-angle hue distribution avoids clustering nearby names.
         final float hue = Math.floorMod((long) hash * 137508L, 360000L) / 1000f;
         final float saturation = dark ? 0.45f : 0.62f;

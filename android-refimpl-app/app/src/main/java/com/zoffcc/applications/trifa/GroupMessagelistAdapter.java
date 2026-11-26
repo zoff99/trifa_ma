@@ -321,7 +321,8 @@ public class GroupMessagelistAdapter extends RecyclerView.Adapter implements Fas
                     break;
             }
             ChatUI.decorate(holder.itemView, getItemViewType(position), m2.sent_timestamp, m2.direction != 0,
-                            m2.read, false, false, MainActivity.selected_group_messages.contains(m2.id), true, m2.was_synced, m2.sync_confirmations);
+                            m2.read, false, false, MainActivity.selected_group_messages.contains(m2.id), true, m2.was_synced, m2.sync_confirmations,
+                            m2.tox_group_peer_pubkey);
             if (getItemViewType(position) != Message_model.PAGING_OLDER && getItemViewType(position) != Message_model.PAGING_NEWER)
             ChatUI.bindDate(holder.itemView, getDateHeaderText(position), position > 0 ? getDateHeaderText(position - 1) : null,
                             m2.sent_timestamp, m2.direction != 0);
