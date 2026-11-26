@@ -1146,6 +1146,11 @@ public class MessageListActivity extends AppCompatActivity
         message_list_activity = this;
         ChatUI.friendAvatar(this, tox_friend_get_public_key__wrapper(friendnum));
         refresh_friend_presence();
+        View presence_anchor = findViewById(R.id.chat_subtitle);
+        if (presence_anchor != null)
+        {
+            presence_anchor.post(this::refresh_friend_presence);
+        }
         wakeup_tox_thread("UI_MSGVIEW");
     }
 
@@ -1361,17 +1366,32 @@ public class MessageListActivity extends AppCompatActivity
             @Override
             public void run()
             {
+                if (isFinishing() || isDestroyed())
+                {
+                    return;
+                }
+
+                boolean online = false;
+                int tox_user_status = 0;
                 try
                 {
-                    if (friendnum < 0 || isFinishing() || isDestroyed())
+                    if (friendnum >= 0)
                     {
-                        return;
+                        FriendList f = HelperFriend.main_get_friend(friendnum);
+                        // The chat header must describe the friend itself, not a relay
+                        // that may still be reachable while the friend is offline.
+                        online = f != null && f.TOX_CONNECTION_real != 0;
+                        tox_user_status = f == null ? 0 : f.TOX_USER_STATUS;
                     }
+                }
+                catch (Exception e)
+                {
+                    e.printStackTrace();
+                    Log.i(TAG, "friend_presence:EE:" + e.getMessage());
+                }
 
-                    FriendList f = HelperFriend.main_get_friend(friendnum);
-                    boolean online = f != null && f.TOX_CONNECTION != 0;
-                    int tox_user_status = f == null ? 0 : f.TOX_USER_STATUS;
-
+                try
+                {
                     ml_icon.setImageResource(online ? R.drawable.circle_green : R.drawable.circle_red);
                     if (tox_user_status == 1)
                     {
@@ -1385,18 +1405,24 @@ public class MessageListActivity extends AppCompatActivity
                     {
                         ml_status_icon.setImageResource(R.drawable.circle_green);
                     }
-
-                    ChatUI.friendPresence(MessageListActivity.this, online, tox_user_status);
                 }
                 catch (Exception e)
                 {
                     e.printStackTrace();
-                    Log.i(TAG, "friend_presence:EE:" + e.getMessage());
                 }
+
+                // Always keep the subtitle visible, even if the friend row could
+                // not be read yet. This prevents the first layout from showing
+                // an empty/gone presence line before the first callback arrives.
+                ChatUI.friendPresence(MessageListActivity.this, online, tox_user_status);
             }
         };
 
-        if (main_handler_s != null)
+        if (Looper.myLooper() == Looper.getMainLooper())
+        {
+            myRunnable.run();
+        }
+        else if (main_handler_s != null)
         {
             main_handler_s.post(myRunnable);
         }

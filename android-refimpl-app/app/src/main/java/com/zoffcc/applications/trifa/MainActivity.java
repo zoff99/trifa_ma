@@ -6572,6 +6572,19 @@ public class MainActivity extends AppCompatActivity
                 f.TOX_CONNECTION_real = a_TOX_CONNECTION;
                 f.TOX_CONNECTION_on_off_real = HelperGeneric.get_toxconnection_wrapper(f.TOX_CONNECTION);
                 HelperFriend.update_friend_in_db_connection_status_real(f);
+
+                try
+                {
+                    if (message_list_activity != null &&
+                        message_list_activity.get_current_friendnum() == friend_number)
+                    {
+                        message_list_activity.set_friend_connection_status_icon();
+                    }
+                }
+                catch (Exception e)
+                {
+                    e.printStackTrace();
+                }
             }
 
             if (is_any_relay(f.tox_public_key_string))
