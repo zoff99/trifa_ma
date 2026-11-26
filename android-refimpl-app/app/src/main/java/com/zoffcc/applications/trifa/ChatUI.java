@@ -530,9 +530,10 @@ final class ChatUI
                 }
                 else
                 {
-                    // Incoming transfer-state icons remain meaningful and keep their bind handler.
-                    icon.setVisibility(View.VISIBLE);
-                    icon.setContentDescription(c.getString(R.string.chat_attachment_state));
+                    // Incoming file/image rows do not show the legacy colored state dot.
+                    // Transfer progress and actions remain in the file controls themselves.
+                    icon.setVisibility(View.GONE);
+                    icon.setContentDescription(null);
                 }
             }
             else if (text)
