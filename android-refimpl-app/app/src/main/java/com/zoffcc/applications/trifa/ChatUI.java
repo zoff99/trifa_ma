@@ -635,9 +635,16 @@ final class ChatUI
      * unchanged.
      */
     private static final int[] SENDER_LIGHT = {
-            0xFFA2002C, 0xFFE42700, 0xFFA56802, 0xFF0E8A00, 0xFF006453, 0xFF017DB4,
-            0xFF0000FE, 0xFF635CFF, 0xFF6F00C3, 0xFFC000F1, 0xFF9F008A, 0xFFE50085
+            0xFFE60000, // 1. Pure Bright Red (4.63:1)
+            0xFFCC4B00, // 2. Vivid Burnt Orange (4.76:1)
+            0xFF198700, // 3. Pure Bright Green (4.69:1)
+            0xFF008080, // 4. True Teal (4.75:1)
+            0xFF0055FF, // 5. Electric Cobalt Blue (5.87:1)
+            0xFF7B00E6, // 6. Bright Electric Violet (6.52:1)
+            0xFFC7007D, // 7. Deep Fuchsia Magenta (5.58:1)
+            0xFF5D4037  // 8. Rich Dark Chocolate (9.32:1)
     };
+
     private static final int[] SENDER_DARK = {
             0xFFFF8282, 0xFFFF8754, 0xFFFFD70D, 0xFFD7FF0D, 0xFF72FF0D, 0xFF0DFFAE,
             0xFF0DFFFF, 0xFF17B2FF, 0xFFA49CFF, 0xFFC891FF, 0xFFFF78DD, 0xFFFF82AC
