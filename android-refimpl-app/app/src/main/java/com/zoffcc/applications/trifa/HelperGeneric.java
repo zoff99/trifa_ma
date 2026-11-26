@@ -623,6 +623,21 @@ public class HelperGeneric
             else
             {
                 // Log.i(TAG, "friend or relay offline, combined still ONLINE");
+                try
+                {
+                    if (MainActivity.message_list_activity != null)
+                    {
+                        if (MainActivity.message_list_activity.get_current_friendnum() == friend_number_)
+                        {
+                            MainActivity.message_list_activity.set_friend_connection_status_icon();
+                        }
+                    }
+                }
+                catch (Exception e)
+                {
+                    e.printStackTrace();
+                }
+
                 HelperFriend.update_single_friend_in_friendlist_view(f);
             }
         }

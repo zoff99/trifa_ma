@@ -6381,7 +6381,8 @@ public class MainActivity extends AppCompatActivity
 
             try
             {
-                if (message_list_activity != null)
+                if (message_list_activity != null &&
+                    message_list_activity.get_current_friendnum() == friend_number)
                 {
                     // Log.i(TAG, "friend_status:002");
                     message_list_activity.set_friend_status_icon();

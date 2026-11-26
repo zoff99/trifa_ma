@@ -66,6 +66,7 @@ import com.vanniktech.emoji.listeners.OnEmojiPopupShownListener;
 import com.vanniktech.emoji.listeners.OnSoftKeyboardCloseListener;
 import com.vanniktech.emoji.listeners.OnSoftKeyboardOpenListener;
 import com.zoffcc.applications.sorm.Filetransfer;
+import com.zoffcc.applications.sorm.FriendList;
 import com.zoffcc.applications.sorm.Message;
 
 import java.io.File;
@@ -680,7 +681,10 @@ public class MessageListActivity extends AppCompatActivity
                     @Override
                     public void run()
                     {
-                        runOnUiThread(() -> ChatUI.setHeader(MessageListActivity.this, f_name, ""));
+                        runOnUiThread(() -> {
+                            ChatUI.setHeader(MessageListActivity.this, f_name, null);
+                            refresh_friend_presence();
+                        });
                     }
                 };
 
@@ -1141,7 +1145,7 @@ public class MessageListActivity extends AppCompatActivity
         HelperGeneric.perf_log(TAG, "friend/act:onResume:TOTAL +" + (SystemClock.elapsedRealtime() - perf_t0) + "ms");
         message_list_activity = this;
         ChatUI.friendAvatar(this, tox_friend_get_public_key__wrapper(friendnum));
-        ChatUI.updatePresence(this, ChatUI.FRIEND);
+        refresh_friend_presence();
         wakeup_tox_thread("UI_MSGVIEW");
     }
 
@@ -1342,45 +1346,15 @@ public class MessageListActivity extends AppCompatActivity
 
     public void set_friend_status_icon()
     {
-        Runnable myRunnable = new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                try
-                {
-                    int tox_user_status_friend = TrifaToxService.orma.selectFromFriendList().
-                            tox_public_key_stringEq(tox_friend_get_public_key__wrapper(friendnum)).
-                            toList().get(0).TOX_USER_STATUS;
-
-                    if (tox_user_status_friend == 0)
-                    {
-                        ml_status_icon.setImageResource(R.drawable.circle_green);
-                    }
-                    else if (tox_user_status_friend == 1)
-                    {
-                        ml_status_icon.setImageResource(R.drawable.circle_orange);
-                    }
-                    else
-                    {
-                        ml_status_icon.setImageResource(R.drawable.circle_red);
-                    ChatUI.updatePresence(MessageListActivity.this, ChatUI.FRIEND);
-                    }
-                }
-                catch (Exception e)
-                {
-                    e.printStackTrace();
-                    Log.i(TAG, "CALL:start:(2):EE:" + e.getMessage());
-                }
-            }
-        };
-        if (main_handler_s != null)
-        {
-            main_handler_s.post(myRunnable);
-        }
+        refresh_friend_presence();
     }
 
     public void set_friend_connection_status_icon()
+    {
+        refresh_friend_presence();
+    }
+
+    public void refresh_friend_presence()
     {
         Runnable myRunnable = new Runnable()
         {
@@ -1389,20 +1363,35 @@ public class MessageListActivity extends AppCompatActivity
             {
                 try
                 {
-                    if (is_friend_online(friendnum) == 0)
+                    if (friendnum < 0 || isFinishing() || isDestroyed())
                     {
-                        ml_icon.setImageResource(R.drawable.circle_red);
+                        return;
+                    }
+
+                    FriendList f = HelperFriend.main_get_friend(friendnum);
+                    boolean online = f != null && f.TOX_CONNECTION != 0;
+                    int tox_user_status = f == null ? 0 : f.TOX_USER_STATUS;
+
+                    ml_icon.setImageResource(online ? R.drawable.circle_green : R.drawable.circle_red);
+                    if (tox_user_status == 1)
+                    {
+                        ml_status_icon.setImageResource(R.drawable.circle_orange);
+                    }
+                    else if (tox_user_status == 2)
+                    {
+                        ml_status_icon.setImageResource(R.drawable.circle_red);
                     }
                     else
                     {
-                        ml_icon.setImageResource(R.drawable.circle_green);
-                    ChatUI.updatePresence(MessageListActivity.this, ChatUI.FRIEND);
+                        ml_status_icon.setImageResource(R.drawable.circle_green);
                     }
+
+                    ChatUI.friendPresence(MessageListActivity.this, online, tox_user_status);
                 }
                 catch (Exception e)
                 {
                     e.printStackTrace();
-                    Log.i(TAG, "CALL:start:(2):EE:" + e.getMessage());
+                    Log.i(TAG, "friend_presence:EE:" + e.getMessage());
                 }
             }
         };
@@ -1410,6 +1399,10 @@ public class MessageListActivity extends AppCompatActivity
         if (main_handler_s != null)
         {
             main_handler_s.post(myRunnable);
+        }
+        else
+        {
+            runOnUiThread(myRunnable);
         }
     }
 

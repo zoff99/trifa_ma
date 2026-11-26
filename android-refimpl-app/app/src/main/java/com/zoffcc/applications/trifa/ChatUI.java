@@ -166,7 +166,15 @@ final class ChatUI
             @Override public void afterTextChanged(Editable s)
             {
                 String[] parts = s.toString().split("\\n", 2);
-                setHeader(a, parts[0], parts.length > 1 ? parts[1] : "");
+                if (kind == FRIEND)
+                {
+                    setHeader(a, parts[0], null);
+                    ((MessageListActivity) a).refresh_friend_presence();
+                }
+                else
+                {
+                    setHeader(a, parts[0], parts.length > 1 ? parts[1] : "");
+                }
             }
         });
         final TextView typing = a.findViewById(R.id.ml_friend_typing);
@@ -189,18 +197,21 @@ final class ChatUI
         {
             avatar.setColorFilter(Color.WHITE);
         }
-        // Existing controllers update these hidden status views. Mirror their meaning in text.
-        final ImageView connection = a.findViewById(R.id.ml_icon);
-        connection.addOnLayoutChangeListener((v, l, t, r, b, ol, ot, or, ob) -> updatePresence(a, kind));
         setupComposer(a, kind);
-        updatePresence(a, kind);
+        if (kind == FRIEND)
+        {
+            ((MessageListActivity) a).refresh_friend_presence();
+        }
     }
 
     static void setHeader(Activity a, String title, String subtitle)
     {
         ((TextView) a.findViewById(R.id.chat_title)).setText(title == null ? "" : title);
-        ((TextView) a.findViewById(R.id.chat_subtitle)).setText(subtitle == null ? "" : subtitle);
-        a.findViewById(R.id.chat_subtitle).setVisibility(subtitle == null || subtitle.isEmpty() ? View.GONE : View.VISIBLE);
+        if (subtitle != null)
+        {
+            ((TextView) a.findViewById(R.id.chat_subtitle)).setText(subtitle);
+            a.findViewById(R.id.chat_subtitle).setVisibility(subtitle.isEmpty() ? View.GONE : View.VISIBLE);
+        }
     }
 
     static void friendAvatar(Activity a, String pubkey)
@@ -212,33 +223,18 @@ final class ChatUI
         HelperGeneric.fill_friend_avatar_icon(m, a, avatar);
     }
 
-    static void updatePresence(Activity a, int kind)
+    static void friendPresence(Activity a, boolean online, int toxUserStatus)
     {
-        if (kind != FRIEND) return;
-        final ImageView connection = a.findViewById(R.id.ml_icon);
-        final ImageView status = a.findViewById(R.id.ml_status_icon);
-        // The existing controller sets circle_green/orange/red. Compare resource identity
-        // through drawable constant state rather than introducing another network call.
-        boolean online = sameDrawable(connection, R.drawable.circle_green);
         int label = R.string.chat_offline;
         if (online)
         {
-            if (sameDrawable(status, R.drawable.circle_orange)) label = R.string.chat_away;
-            else if (sameDrawable(status, R.drawable.circle_red)) label = R.string.chat_busy;
+            if (toxUserStatus == 1) label = R.string.chat_away;
+            else if (toxUserStatus == 2) label = R.string.chat_busy;
             else label = R.string.chat_online;
         }
-        String subtitle = a.getString(label);
-        ((TextView) a.findViewById(R.id.chat_subtitle)).setText(subtitle);
-        ((TextView) a.findViewById(R.id.chat_subtitle)).setVisibility(View.VISIBLE);
-    }
-
-    private static boolean sameDrawable(ImageView view, int drawable)
-    {
-        if (view.getDrawable() == null) return false;
-        {
-            android.graphics.drawable.Drawable d = ContextCompat.getDrawable(view.getContext(), drawable);
-            return d != null && d.getConstantState() != null && d.getConstantState().equals(view.getDrawable().getConstantState());
-        }
+        TextView subtitle = a.findViewById(R.id.chat_subtitle);
+        subtitle.setText(label);
+        subtitle.setVisibility(View.VISIBLE);
     }
 
     static void setupComposer(final AppCompatActivity a, int kind)
