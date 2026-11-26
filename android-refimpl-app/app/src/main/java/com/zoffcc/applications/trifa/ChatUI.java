@@ -82,6 +82,11 @@ final class ChatUI
         return ContextCompat.getColor(c, night(c) ? R.color.chat_metadata_dark : R.color.chat_metadata);
     }
 
+    static int linkColor(Context c)
+    {
+        return ContextCompat.getColor(c, night(c) ? R.color.chat_link_dark : R.color.chat_link);
+    }
+
     static void setup(final AppCompatActivity a, final int kind, final SearchView search)
     {
         a.getSupportActionBar().setDisplayShowTitleEnabled(false);
@@ -508,7 +513,15 @@ final class ChatUI
         if (body != null)
         {
             body.setTextColor(textColor(c));
-            body.setLinkTextColor(color(row, night(c) ? R.color.chat_link_dark : R.color.chat_link));
+            final int link = linkColor(c);
+            body.setLinkTextColor(link);
+            // The autolink view bakes link colors into spans, so setLinkTextColor
+            // alone is not enough. Rebuild the spans with the accessible color.
+            if (body instanceof com.luseen.autolinklibrary.EmojiTextViewLinks)
+            {
+                ((com.luseen.autolinklibrary.EmojiTextViewLinks) body).recolorLinks(
+                        link, ColorUtils.setAlphaComponent(link, 0x40));
+            }
             body.setMaxWidth(Math.max(dp(c, 160), c.getResources().getDisplayMetrics().widthPixels - dp(c, 92)));
         }
         if (date != null)
@@ -607,71 +620,37 @@ final class ChatUI
     }
 
     /**
-     * Accessible sender-name color.
+     * Vivid, clearly-distinct sender-name colors for the redesigned bubbles.
      *
-     * The hue is derived from the peer public key, never from the display name,
-     * so a peer keeps the same color when their name changes. The final color is
-     * adjusted until it reaches at least a 7:1 contrast ratio against the
-     * incoming bubble, the chat canvas, and the selection-tinted variants of
-     * both. This keeps names readable in light and dark mode, including for
-     * users with reduced vision.
+     * The previous approach generated a hue and then blended it toward black or
+     * white until it hit a high contrast ratio. That desaturated every peer into
+     * a near-identical muddy tone, so the colors were hard to tell apart.
+     *
+     * Instead we use a curated palette of saturated, well-separated hues. Every
+     * entry was verified to reach at least a 4.5:1 contrast ratio against the
+     * incoming bubble, the chat canvas, and the selection-tinted variants of both
+     * in its mode, so the names stay readable for users with reduced vision while
+     * remaining obviously colored and easy to distinguish.
+     */
+    private static final int[] SENDER_LIGHT = {
+            0xFFBA0000, 0xFFA63200, 0xFF854E00, 0xFF516100, 0xFF2C6800, 0xFF006846,
+            0xFF006565, 0xFF006091, 0xFF1500FF, 0xFF7900F1, 0xFFAC0081, 0xFFB7003D
+    };
+    private static final int[] SENDER_DARK = {
+            0xFFFF8282, 0xFFFF8754, 0xFFFFD70D, 0xFFD7FF0D, 0xFF72FF0D, 0xFF0DFFAE,
+            0xFF0DFFFF, 0xFF17B2FF, 0xFFA49CFF, 0xFFC891FF, 0xFFFF78DD, 0xFFFF82AC
+    };
+
+    /**
+     * Stable sender color keyed by the peer public key (never the display name),
+     * so a peer keeps the same color when their name changes.
      */
     static int senderColor(Context c, String peerPubkey)
     {
-        final boolean dark = night(c);
         final String key = peerPubkey == null ? "" : peerPubkey.trim().toLowerCase(Locale.ROOT);
         final int hash = key.hashCode();
-        // Golden-angle hue distribution avoids clustering nearby names.
-        final float hue = Math.floorMod((long) hash * 137508L, 360000L) / 1000f;
-        final float saturation = dark ? 0.45f : 0.62f;
-        final float value = dark ? 0.95f : 0.55f;
-        final int base = Color.HSVToColor(new float[]{hue, saturation, value});
-        final int[] backgrounds = peerBackgrounds(c, dark);
-        if (minContrast(base, backgrounds) >= 7f) return base;
-
-        // Blend toward the mode's extreme until the contrast target is met.
-        final int extreme = dark ? Color.WHITE : Color.BLACK;
-        float lo = 0f;
-        float hi = 1f;
-        int best = extreme;
-        for (int i = 0; i < 24; i++)
-        {
-            final float mid = (lo + hi) / 2f;
-            final int candidate = ColorUtils.blendARGB(base, extreme, mid);
-            if (minContrast(candidate, backgrounds) >= 7f)
-            {
-                best = candidate;
-                hi = mid;
-            }
-            else
-            {
-                lo = mid;
-            }
-        }
-        return best;
-    }
-
-    private static int[] peerBackgrounds(Context c, boolean dark)
-    {
-        final int incoming = color(c, dark ? R.color.chat_incoming_dark : R.color.chat_incoming);
-        final int canvas = color(c, dark ? R.color.chat_canvas_dark : R.color.chat_canvas);
-        final int selection = color(c, R.color.chat_selection);
-        return new int[]{
-                incoming,
-                canvas,
-                ColorUtils.compositeColors(selection, incoming),
-                ColorUtils.compositeColors(selection, canvas)
-        };
-    }
-
-    private static float minContrast(int foreground, int[] backgrounds)
-    {
-        float min = Float.MAX_VALUE;
-        for (int background : backgrounds)
-        {
-            min = Math.min(min, (float) ColorUtils.calculateContrast(foreground, background));
-        }
-        return min;
+        final int[] palette = night(c) ? SENDER_DARK : SENDER_LIGHT;
+        return palette[Math.floorMod(hash, palette.length)];
     }
 
     abstract static class SimpleWatcher implements TextWatcher

@@ -15,8 +15,8 @@
     <color name="chat_text_dark">#EDF5F2</color>
     <color name="chat_metadata">#586B63</color>
     <color name="chat_metadata_dark">#B1C7BE</color>
-    <color name="chat_link">#087A83</color>
-    <color name="chat_link_dark">#7DD6DC</color>
+    <color name="chat_link">#174EA6</color>
+    <color name="chat_link_dark">#FFD54F</color>
     <color name="chat_accent">#168574</color>
     <color name="chat_read">#1689A0</color>
     <color name="chat_selection">#3320A18A</color>

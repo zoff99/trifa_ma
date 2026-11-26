@@ -139,6 +139,53 @@ public class EmojiTextViewLinks extends com.vanniktech.emoji.EmojiTextView
         setMovementMethod(new LinkTouchMovementMethod());
     }
 
+    /**
+     * Re-apply a single accessible color to every kind of auto-detected link and
+     * rebuild the spans so the color actually takes effect.
+     *
+     * The per-mode colors are baked into the spans when {@link #setAutoLinkText}
+     * runs, so calling {@code setLinkTextColor} afterwards has no effect on them.
+     * This method sets all mode colors, underlines links (so they are not
+     * identified by color alone), and rebuilds the spannable while preserving any
+     * search-highlight background spans that are already present.
+     */
+    public void recolorLinks(@ColorInt int linkColor, @ColorInt int selectedColor)
+    {
+        setMentionModeColor(linkColor);
+        setHashtagModeColor(linkColor);
+        setUrlModeColor(linkColor);
+        setPhoneModeColor(linkColor);
+        setEmailModeColor(linkColor);
+        setCustomModeColor(linkColor);
+        setSelectedStateColor(selectedColor);
+        setLinkTextColor(linkColor);
+        enableUnderLine();
+
+        final CharSequence current = getText();
+        final String text = current == null ? "" : current.toString();
+        final SpannableString rebuilt = makeSpannableString(text);
+
+        // Preserve search-highlight background spans across the rebuild.
+        if (current instanceof Spanned)
+        {
+            final Spanned spanned = (Spanned) current;
+            final BackgroundColorSpan[] highlights = spanned.getSpans(0, spanned.length(), BackgroundColorSpan.class);
+            for (BackgroundColorSpan highlight : highlights)
+            {
+                final int start = spanned.getSpanStart(highlight);
+                final int end = spanned.getSpanEnd(highlight);
+                if (start >= 0 && end > start && end <= rebuilt.length())
+                {
+                    rebuilt.setSpan(new BackgroundColorSpan(highlight.getBackgroundColor()), start, end,
+                                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                }
+            }
+        }
+
+        setText(rebuilt, BufferType.SPANNABLE);
+        setMovementMethod(new LinkTouchMovementMethod());
+    }
+
     private SpannableString makeSpannableString(String text)
     {
         final SpannableString spannableString = new SpannableString(text);
