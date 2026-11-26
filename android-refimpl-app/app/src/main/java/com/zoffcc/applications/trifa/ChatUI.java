@@ -533,9 +533,14 @@ final class ChatUI
         if (peer != null && peer.getVisibility() == View.VISIBLE)
         {
             peer.setTextColor(senderColor(c, peerPubkey));
-            // Keep sender names legible for low-vision users: bold and not tiny.
-            peer.setTypeface(Typeface.DEFAULT_BOLD);
-            peer.setTextSize(TypedValue.COMPLEX_UNIT_SP, 13);
+            // Clean medium-weight sender label, slightly larger than metadata.
+            Typeface peerTypeface = Typeface.create("sans-serif-medium", Typeface.NORMAL);
+            if (peerTypeface == Typeface.DEFAULT)
+            {
+                peerTypeface = Typeface.DEFAULT_BOLD;
+            }
+            peer.setTypeface(peerTypeface);
+            peer.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
         }
         if (icon != null)
         {
@@ -622,15 +627,16 @@ final class ChatUI
      * white until it hit a high contrast ratio. That desaturated every peer into
      * a near-identical muddy tone, so the colors were hard to tell apart.
      *
-     * Instead we use a curated palette of saturated, well-separated hues. Every
-     * entry was verified to reach at least a 4.5:1 contrast ratio against the
-     * incoming bubble, the chat canvas, and the selection-tinted variants of both
-     * in its mode, so the names stay readable for users with reduced vision while
-     * remaining obviously colored and easy to distinguish.
+     * Instead we use a curated palette of saturated, well-separated hues. The
+     * light palette uses brighter, cleaner hues while keeping at least 4.5:1
+     * contrast on the normal incoming bubble and at least 3:1 on the canvas and
+     * selection-tinted variants. The dark palette is unchanged. Sender labels are
+     * medium-weight and 14sp so the color remains easy to read without looking
+     * like a heavy headline.
      */
     private static final int[] SENDER_LIGHT = {
-            0xFFBA0000, 0xFFA63200, 0xFF854E00, 0xFF516100, 0xFF2C6800, 0xFF006846,
-            0xFF006565, 0xFF006091, 0xFF1500FF, 0xFF7900F1, 0xFFAC0081, 0xFFB7003D
+            0xFFD32F2F, 0xFFC94600, 0xFFA66300, 0xFF5F7A00, 0xFF1B7F35, 0xFF007A6C,
+            0xFF007C8A, 0xFF1565C0, 0xFF614CCC, 0xFF9C27B0, 0xFFCC3D70, 0xFFC026D3
     };
     private static final int[] SENDER_DARK = {
             0xFFFF8282, 0xFFFF8754, 0xFFFFD70D, 0xFFD7FF0D, 0xFF72FF0D, 0xFF0DFFAE,
