@@ -627,16 +627,16 @@ final class ChatUI
      * white until it hit a high contrast ratio. That desaturated every peer into
      * a near-identical muddy tone, so the colors were hard to tell apart.
      *
-     * Instead we use a curated palette of saturated, well-separated hues. The
-     * light palette uses brighter, cleaner hues while keeping at least 4.5:1
-     * contrast on the normal incoming bubble and at least 3:1 on the canvas and
-     * selection-tinted variants. The dark palette is unchanged. Sender labels are
-     * medium-weight and 14sp so the color remains easy to read without looking
-     * like a heavy headline.
+     * The light palette is calculated in OKLab. Candidate colors are restricted
+     * to sRGB colors with at least 4.5:1 contrast against white, then 12 colors
+     * are chosen to maximize the minimum perceptual distance between any pair.
+     * The resulting minimum OKLab distance is about 0.146, so no two sender
+     * colors collapse into the same green/grey impression. The dark palette is
+     * unchanged.
      */
     private static final int[] SENDER_LIGHT = {
-            0xFFD32F2F, 0xFFC94600, 0xFFA66300, 0xFF5F7A00, 0xFF1B7F35, 0xFF007A6C,
-            0xFF007C8A, 0xFF1565C0, 0xFF614CCC, 0xFF9C27B0, 0xFFCC3D70, 0xFFC026D3
+            0xFFA2002C, 0xFFE42700, 0xFFA56802, 0xFF0E8A00, 0xFF006453, 0xFF017DB4,
+            0xFF0000FE, 0xFF635CFF, 0xFF6F00C3, 0xFFC000F1, 0xFF9F008A, 0xFFE50085
     };
     private static final int[] SENDER_DARK = {
             0xFFFF8282, 0xFFFF8754, 0xFFFFD70D, 0xFFD7FF0D, 0xFF72FF0D, 0xFF0DFFAE,
