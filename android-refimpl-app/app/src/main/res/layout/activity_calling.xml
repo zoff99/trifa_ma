@@ -60,6 +60,10 @@
             android:ellipsize="end"
             android:fontFamily="sans-serif-medium"
             android:maxLines="1"
+            android:shadowColor="#80000000"
+            android:shadowDx="0"
+            android:shadowDy="1"
+            android:shadowRadius="4"
             android:textColor="#F2F6F8"
             android:textSize="22sp"
             tools:text="Friend" />
@@ -68,12 +72,22 @@
             android:id="@+id/call_subtitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
+            android:layout_marginTop="6dp"
+            android:background="@drawable/call_subtitle_chip"
             android:ellipsize="end"
+            android:fontFamily="sans-serif-medium"
             android:maxLines="1"
-            android:textColor="#9AA7B0"
-            android:textSize="14sp"
-            tools:text="Video call" />
+            android:paddingStart="10dp"
+            android:paddingTop="3dp"
+            android:paddingEnd="10dp"
+            android:paddingBottom="3dp"
+            android:shadowColor="#80000000"
+            android:shadowDx="0"
+            android:shadowDy="1"
+            android:shadowRadius="2"
+            android:textColor="#E6EDF3"
+            android:textSize="13sp"
+            tools:text="00:42" />
     </LinearLayout>
 
     <ImageView
