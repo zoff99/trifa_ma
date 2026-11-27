@@ -82,7 +82,7 @@
 
         <activity
             android:name=".StartMainActivityWrapper"
-            android:label="@string/launcher_app_name"
+            android:label="@string/app_name"
             android:configChanges="screenSize|locale|touchscreen|navigation|orientation|fontScale|keyboard|keyboardHidden"
             android:launchMode="singleTask"
             android:exported="true">
