@@ -1134,15 +1134,7 @@ public class CallingActivity extends AppCompatActivity implements CameraWrapper.
                 {
                     Log.i(TAG, "active_camera_type(8)=" + active_camera_type);
 
-                    if (active_camera_type == FRONT_CAMERA_USED)
-                    {
-                        update_camera_button();
-                    }
-                    else
-                    {
-                        update_camera_button();
-                    }
-
+                    update_camera_button();
                     camera_toggle_button_pressed = true;
                     Log.i(TAG, "camera_toggle_button_pressed[press start]=" + camera_toggle_button_pressed);
                     final Thread toggle_thread = new Thread()
@@ -1459,9 +1451,15 @@ public class CallingActivity extends AppCompatActivity implements CameraWrapper.
         {
             return;
         }
-        camera_toggle_button.setImageResource(R.drawable.call_ic_camera_switch);
+        boolean front = active_camera_type == FRONT_CAMERA_USED;
+        camera_toggle_button.setImageResource(front ? R.drawable.call_ic_camera_front : R.drawable.call_ic_camera_rear);
         camera_toggle_button.setBackgroundResource(R.drawable.call_btn_neutral);
-        camera_toggle_button.setColorFilter(Color.WHITE);
+        camera_toggle_button.clearColorFilter();
+        if (ca != null)
+        {
+            camera_toggle_button.setContentDescription(
+                    ca.getString(front ? R.string.call_camera_front : R.string.call_camera_rear));
+        }
     }
 
     static void update_call_subtitle()
@@ -1789,6 +1787,18 @@ public class CallingActivity extends AppCompatActivity implements CameraWrapper.
                         active_camera_type = FRONT_CAMERA_USED;
                         Log.i(TAG, "active_camera_type(8b)=" + active_camera_type);
                         CameraWrapper.getInstance().doOpenCamera(CallingActivity.this, true);
+                    }
+
+                    if (callactivity_handler_s != null)
+                    {
+                        callactivity_handler_s.post(new Runnable()
+                        {
+                            @Override
+                            public void run()
+                            {
+                                update_camera_button();
+                            }
+                        });
                     }
                 }
                 catch (Exception e)
