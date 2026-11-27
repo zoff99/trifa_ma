@@ -191,16 +191,19 @@ public class JavaFriendTester
             }
             count_friends = orma.selectFromFriendList().count();
         }
+        Log.i(TAG, "FRIEND(S) FOUND: num friends=" + count_friends);
 
         screenshot("004a");
         wait_(12);
         screenshot("004b");
+        Log.i(TAG, "trying to open friend message view");
         onView(
                 getElementFromMatchAtPosition(
                     allOf(withId(R.id.f_avatar_icon), withParent(withId(R.id.friend_line_container)))
                     ,0
                 )
         ).perform(click());
+        Log.i(TAG, "friend message view open");
 
         wait_(1);
         Espresso.closeSoftKeyboard();
