@@ -71,12 +71,12 @@
             android:summary="__"
             android:title="@string/pref_title_download_push_msg_app" />
         <SwitchPreference
-            android:defaultValue="false"
+            android:defaultValue="true"
             android:key="allow_push_server_ntfy"
             android:summary="@string/pref_description_allow_push_server_ntfy"
             android:title="@string/pref_title_allow_push_server_ntfy" />
         <SwitchPreference
-            android:defaultValue="false"
+            android:defaultValue="true"
             android:key="allow_push_server_sunup"
             android:summary="@string/pref_description_allow_push_server_sunup"
             android:title="@string/pref_title_allow_push_server_sunup" />
@@ -136,12 +136,12 @@
             android:summary="@string/pref_description_window_security"
             android:title="@string/pref_title_window_security" />
         <SwitchPreference
-            android:defaultValue="false"
+            android:defaultValue="true"
             android:key="allow_open_encrypted_file_via_intent"
             android:summary="@string/pref_description_allow_open_encrypted_file_via_intent"
             android:title="@string/pref_title_allow_open_encrypted_file_via_intent" />
         <SwitchPreference
-            android:defaultValue="false"
+            android:defaultValue="true"
             android:key="X_persistent_peerlist"
             android:summary="Show group members even when they are offline.\n\nTrade-off: your online presence becomes cryptographically provable to the group (signed notices, cached about 30 days) instead of ephemeral and deniable. A warning explains the risks when you enable it.\n\nRequires restart."
             android:title="Persistent peerlist (experimental)" />

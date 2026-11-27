@@ -515,7 +515,7 @@ public class MainActivity extends AppCompatActivity
     static int PREF__higher_audio_quality = 1;
     static int PREF__video_call_quality = 0;
     static int PREF__X_audio_play_buffer_custom = 0;
-    static boolean PREF__X_persistent_peerlist = false;
+    static boolean PREF__X_persistent_peerlist = true;
     static int PREF__udp_enabled = 0; // 0 -> Tox TCP mode, 1 -> Tox UDP mode
     static int PREF__audiosource = 2; // 1 -> VOICE_COMMUNICATION, 2 -> VOICE_RECOGNITION
     static boolean PREF__orbot_enabled = false;
@@ -563,15 +563,15 @@ public class MainActivity extends AppCompatActivity
     static int PREF__video_cam_resolution = 0;
     static final int PREF_GLOBAL_FONT_SIZE_DEFAULT = 2;
     static int PREF__global_font_size = PREF_GLOBAL_FONT_SIZE_DEFAULT;
-    static boolean PREF__allow_open_encrypted_file_via_intent = false;
+    static boolean PREF__allow_open_encrypted_file_via_intent = true;
     static boolean PREF__allow_file_sharing_to_trifa_via_intent = true;
     static boolean PREF__use_push_service = true;
     static String[] PREF__toxirc_muted_peers = {};
     static boolean PREF__hide_setup_push_tip = false;
     static boolean PREF__show_friendnumber_on_friendlist = false;
     static int PREF__dark_mode_pref = 0;
-    static boolean PREF__allow_push_server_ntfy = false;
-    static boolean PREF__allow_push_server_sunup = false;
+    static boolean PREF__allow_push_server_ntfy = true;
+    static boolean PREF__allow_push_server_sunup = true;
     static boolean PREF__messageview_paging = true;
     static int PREF__message_paging_num_msgs_per_page = 2000;
     static int PREF__ngc_video_bitrate = LOWER_NGC_VIDEO_BITRATE; // ~600 kbits/s -> ~60 kbytes/s
@@ -1270,7 +1270,7 @@ public class MainActivity extends AppCompatActivity
         PREF__notification_show_content = settings.getBoolean("notification_show_content", false);
         PREF__notification = settings.getBoolean("notifications_new_message", true);
         PREF__software_echo_cancel = settings.getBoolean("software_echo_cancel", false);
-        PREF__X_persistent_peerlist = settings.getBoolean("X_persistent_peerlist", false);
+        PREF__X_persistent_peerlist = settings.getBoolean("X_persistent_peerlist", true);
         PREF__fps_half = settings.getBoolean("fps_half", false);
         PREF__h264_encoder_use_intra_refresh = settings.getBoolean("h264_encoder_use_intra_refresh", true);
         PREF__U_keep_nospam = settings.getBoolean("U_keep_nospam", false);
@@ -1634,33 +1634,33 @@ public class MainActivity extends AppCompatActivity
         try
         {
             PREF__allow_open_encrypted_file_via_intent = settings.getBoolean("allow_open_encrypted_file_via_intent",
-                                                                             false);
+                                                                             true);
         }
         catch (Exception e)
         {
             e.printStackTrace();
-            PREF__allow_open_encrypted_file_via_intent = false;
+            PREF__allow_open_encrypted_file_via_intent = true;
         }
 
 
         try
         {
-            PREF__allow_push_server_ntfy = settings.getBoolean("allow_push_server_ntfy", false);
+            PREF__allow_push_server_ntfy = settings.getBoolean("allow_push_server_ntfy", true);
         }
         catch (Exception e)
         {
             e.printStackTrace();
-            PREF__allow_push_server_ntfy = false;
+            PREF__allow_push_server_ntfy = true;
         }
 
         try
         {
-            PREF__allow_push_server_sunup = settings.getBoolean("allow_push_server_sunup", false);
+            PREF__allow_push_server_sunup = settings.getBoolean("allow_push_server_sunup", true);
         }
         catch (Exception e)
         {
             e.printStackTrace();
-            PREF__allow_push_server_sunup = false;
+            PREF__allow_push_server_sunup = true;
         }
 
         try
@@ -3915,7 +3915,7 @@ public class MainActivity extends AppCompatActivity
         PREF__notification_show_content = settings.getBoolean("notification_show_content", false);
         PREF__notification = settings.getBoolean("notifications_new_message", true);
         PREF__software_echo_cancel = settings.getBoolean("software_echo_cancel", false);
-        PREF__X_persistent_peerlist = settings.getBoolean("X_persistent_peerlist", false);
+        PREF__X_persistent_peerlist = settings.getBoolean("X_persistent_peerlist", true);
         PREF__fps_half = settings.getBoolean("fps_half", false);
         PREF__h264_encoder_use_intra_refresh = settings.getBoolean("h264_encoder_use_intra_refresh", true);
         PREF__U_keep_nospam = settings.getBoolean("U_keep_nospam", false);
@@ -4349,33 +4349,33 @@ public class MainActivity extends AppCompatActivity
         try
         {
             PREF__allow_open_encrypted_file_via_intent = settings.getBoolean("allow_open_encrypted_file_via_intent",
-                                                                             false);
+                                                                             true);
         }
         catch (Exception e)
         {
             e.printStackTrace();
-            PREF__allow_open_encrypted_file_via_intent = false;
+            PREF__allow_open_encrypted_file_via_intent = true;
         }
 
 
         try
         {
-            PREF__allow_push_server_ntfy = settings.getBoolean("allow_push_server_ntfy", false);
+            PREF__allow_push_server_ntfy = settings.getBoolean("allow_push_server_ntfy", true);
         }
         catch (Exception e)
         {
             e.printStackTrace();
-            PREF__allow_push_server_ntfy = false;
+            PREF__allow_push_server_ntfy = true;
         }
 
         try
         {
-            PREF__allow_push_server_sunup = settings.getBoolean("allow_push_server_sunup", false);
+            PREF__allow_push_server_sunup = settings.getBoolean("allow_push_server_sunup", true);
         }
         catch (Exception e)
         {
             e.printStackTrace();
-            PREF__allow_push_server_sunup = false;
+            PREF__allow_push_server_sunup = true;
         }
 
         try
