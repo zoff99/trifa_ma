@@ -108,11 +108,12 @@ public class StartMainActivityWrapperTest
                 cause_error(1);
             }
             cur_act = getActivityInstance().getLocalClassName();
-            if (cur_act.equals("CheckPasswordActivity"))
+            Log.i(TAG, "ACT2:" + cur_act);
+            if (cur_act.equals("com.zoffcc.applications.trifa.CheckPasswordActivity"))
             {
                 showing_app = true;
             }
-            else if (cur_act.equals("SetPasswordActivity"))
+            else if (cur_act.equals("com.zoffcc.applications.trifa.SetPasswordActivity"))
             {
                 showing_app = true;
             }
@@ -129,13 +130,13 @@ public class StartMainActivityWrapperTest
 
         screenshot("001");
 
-        if (cur_act.equals("CheckPasswordActivity"))
+        if (cur_act.equals("com.zoffcc.applications.trifa.CheckPasswordActivity"))
         {
             onView(withId(R.id.password_1_c)).perform(replaceText(MOCK_PASSWORD));
             screenshot("002a");
             onView(withId(R.id.set_button_2)).perform(click());
         }
-        else if (cur_act.equals("SetPasswordActivity"))
+        else if (cur_act.equals("com.zoffcc.applications.trifa.SetPasswordActivity"))
         {
             onView(withId(R.id.password_1)).perform(replaceText(MOCK_PASSWORD));
             onView(withId(R.id.password_2)).perform(replaceText(MOCK_PASSWORD));
