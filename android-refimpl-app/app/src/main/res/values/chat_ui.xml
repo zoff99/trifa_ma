@@ -23,9 +23,9 @@
     <color name="chat_selection">#3320A18A</color>
     <color name="chat_date_bg">#E2EAE5</color>
     <color name="chat_date_bg_dark">#2B403A</color>
-    <color name="chat_composer">#F8FAF8</color>
+    <color name="chat_composer">#F2F0EB</color>
     <color name="chat_composer_dark">#172725</color>
-    <color name="chat_input">#FFFFFF</color>
+    <color name="chat_input">#FBFAF7</color>
     <color name="chat_input_dark">#243A34</color>
     <dimen name="chat_bubble_radius">14dp</dimen>
     <dimen name="chat_action_size">44dp</dimen>
