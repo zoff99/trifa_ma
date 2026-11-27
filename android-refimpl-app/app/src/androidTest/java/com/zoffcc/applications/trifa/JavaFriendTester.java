@@ -197,12 +197,16 @@ public class JavaFriendTester
         wait_(12);
         screenshot("004b");
         Log.i(TAG, "trying to open friend message view");
-        onView(
-                getElementFromMatchAtPosition(
-                    allOf(withId(R.id.f_avatar_icon), withParent(withId(R.id.friend_line_container)))
-                    ,0
-                )
-        ).perform(click());
+//        onView(
+//                getElementFromMatchAtPosition(
+//                    allOf(withId(R.id.f_avatar_icon), withParent(withId(R.id.friend_line_container)))
+//                    ,0
+//                )
+//        ).perform(click());
+
+        // Click the top item in the list
+        onView(first(withId(R.id.f_name))).perform(click());
+
         Log.i(TAG, "friend message view open");
 
         wait_(1);
@@ -229,6 +233,28 @@ public class JavaFriendTester
         screenshot_full("099");
         Log.i(TAG, "taking last screenshot ... DONE");
     }
+
+    // 1. Add this helper method to your test class
+    public static <T> Matcher<T> first(final Matcher<T> matcher) {
+        return new BaseMatcher<T>() {
+            boolean isFirst = true;
+
+            @Override
+            public boolean matches(final Object item) {
+                if (isFirst && matcher.matches(item)) {
+                    isFirst = false;
+                    return true;
+                }
+                return false;
+            }
+
+            @Override
+            public void describeTo(final Description description) {
+                description.appendText("should return first matching item");
+            }
+        };
+    }
+
 
     private static void testwrite(final String num, final String text)
     {
