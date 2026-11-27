@@ -194,6 +194,7 @@ public class CallingActivity extends AppCompatActivity implements CameraWrapper.
     TextView text_vq_med = null;
     TextView text_vq_high = null;
     static View video_box_self_preview_01 = null;
+    static boolean self_preview_hidden_by_user = false;
     static View video_box_left_top_01 = null;
     static View video_box_right_top_01 = null;
     final static String MIME_TYPE = "video/avc";   // H.264 Advanced Video Coding
@@ -318,6 +319,7 @@ public class CallingActivity extends AppCompatActivity implements CameraWrapper.
         }
 
         trifa_is_MicrophoneMute = false;
+        self_preview_hidden_by_user = false;
         ca = this;
 
         sensor_manager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
@@ -353,6 +355,15 @@ public class CallingActivity extends AppCompatActivity implements CameraWrapper.
         video_box_right_top_01 = findViewById(R.id.video_box_right_top_01);
 
         video_box_self_preview_01.setVisibility(View.INVISIBLE);
+        video_box_self_preview_01.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                self_preview_hidden_by_user = !self_preview_hidden_by_user;
+                apply_self_preview_visibility();
+            }
+        });
         video_box_left_top_01.setVisibility(View.INVISIBLE);
         video_box_right_top_01.setVisibility(View.INVISIBLE);
 
@@ -1042,6 +1053,7 @@ public class CallingActivity extends AppCompatActivity implements CameraWrapper.
                         {
                             audio_manager_s.setMicrophoneMute(false);
                             trifa_is_MicrophoneMute = false;
+        self_preview_hidden_by_user = false;
                             update_mute_button();
                         }
                         else
@@ -2390,6 +2402,20 @@ public class CallingActivity extends AppCompatActivity implements CameraWrapper.
 
     }
 
+    static void apply_self_preview_visibility()
+    {
+        if (cameraSurfacePreview == null)
+        {
+            return;
+        }
+        int visibility = self_preview_hidden_by_user ? View.INVISIBLE : View.VISIBLE;
+        cameraSurfacePreview.setVisibility(visibility);
+        if (drawingOverlay != null)
+        {
+            drawingOverlay.setVisibility(visibility);
+        }
+    }
+
     static void toggle_cam_preview(boolean visible, boolean alpha_only)
     {
         if (alpha_only)
@@ -2446,7 +2472,8 @@ public class CallingActivity extends AppCompatActivity implements CameraWrapper.
                     {
                         try
                         {
-                            cameraSurfacePreview.setVisibility(View.VISIBLE);
+                            cameraSurfacePreview.setVisibility(
+                                    self_preview_hidden_by_user ? View.INVISIBLE : View.VISIBLE);
                         }
                         catch (Exception e)
                         {
@@ -2701,6 +2728,7 @@ public class CallingActivity extends AppCompatActivity implements CameraWrapper.
                 {
                     CallingActivity.video_box_self_preview_01.setVisibility(
                             Callstate.audio_call ? View.GONE : View.VISIBLE);
+                    apply_self_preview_visibility();
                     CallingActivity.video_speaker_aec.setVisibility(View.VISIBLE);
                     CallingActivity.caller_avatar_view.setVisibility(
                             Callstate.audio_call ? View.VISIBLE : View.GONE);

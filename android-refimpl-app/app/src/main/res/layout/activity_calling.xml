@@ -89,14 +89,16 @@
 
     <FrameLayout
         android:id="@+id/video_box_self_preview_01"
-        android:layout_width="124dp"
-        android:layout_height="164dp"
+        android:layout_width="120dp"
+        android:layout_height="160dp"
         android:layout_gravity="top|end"
         android:layout_marginTop="96dp"
         android:layout_marginEnd="16dp"
-        android:background="@drawable/call_preview_bg"
+        android:background="@null"
+        android:clickable="true"
+        android:contentDescription="@string/call_toggle_self_preview"
         android:elevation="8dp"
-        android:padding="2dp"
+        android:focusable="true"
         android:visibility="invisible">
 
         <com.zoffcc.applications.trifa.CameraSurfacePreview

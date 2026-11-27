@@ -607,4 +607,5 @@
     <string name="call_camera_rear">Rear camera</string>
     <string name="call_audio_you">Your microphone level</string>
     <string name="call_audio_friend">Friend audio level</string>
+    <string name="call_toggle_self_preview">Show or hide your own video</string>
 </resources>
