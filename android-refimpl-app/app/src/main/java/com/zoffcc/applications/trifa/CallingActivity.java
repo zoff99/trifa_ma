@@ -308,6 +308,8 @@ public class CallingActivity extends AppCompatActivity implements CameraWrapper.
 
         audio_bar_in_v = (BarLevelDrawable) findViewById(R.id.audio_bar_in_v);
         audio_bar_out_v = (BarLevelDrawable) findViewById(R.id.audio_bar_out_v);
+        audio_bar_in_v.setModernStyle(true);
+        audio_bar_out_v.setModernStyle(true);
 
         if (PREF__window_security)
         {

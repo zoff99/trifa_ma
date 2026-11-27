@@ -603,4 +603,6 @@
     <string name="call_audio">Audio call</string>
     <string name="call_video">Video call</string>
     <string name="call_waiting_title">Waiting for friend to come online…</string>
+    <string name="call_audio_you">Your microphone level</string>
+    <string name="call_audio_friend">Friend audio level</string>
 </resources>

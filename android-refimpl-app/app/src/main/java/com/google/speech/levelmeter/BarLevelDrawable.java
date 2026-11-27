@@ -36,6 +36,8 @@ package com.google.speech.levelmeter;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.RectF;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.RectShape;
 import android.util.AttributeSet;
@@ -64,6 +66,9 @@ public final class BarLevelDrawable extends View
     private ShapeDrawable mDrawable_yellow;
     private ShapeDrawable mDrawable_red;
     private double mLevel = 0.1;
+    private boolean mModernStyle = false;
+    private final Paint mModernPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+    private final RectF mModernRect = new RectF();
 
     final int[] segmentColors = {0xff00ff00, 0xff00ff00, 0xff00ff00, 0xff00ff00, 0xff00ff00, 0xff00ff00, // green
             0xffffff00, 0xffffff00, 0xffffff00, // yellow
@@ -113,6 +118,16 @@ public final class BarLevelDrawable extends View
         return mLevel;
     }
 
+    /**
+     * Enable a rounded, low-glare style suitable for the redesigned call UI.
+     * Legacy callers keep the original LED appearance by default.
+     */
+    public void setModernStyle(boolean modernStyle)
+    {
+        mModernStyle = modernStyle;
+        invalidate();
+    }
+
     private void initBarLevelDrawable()
     {
         mLevel = 0.1;
@@ -126,8 +141,55 @@ public final class BarLevelDrawable extends View
         mDrawable_red.getPaint().setColor(0xffff0000);
     }
 
+    private void drawModernBar(Canvas canvas)
+    {
+        final int segments = 14;
+        final float width = getWidth();
+        final float height = getHeight();
+        final float gap = Math.max(2f, width * 0.45f);
+        final float segmentHeight = (height - gap * (segments - 1)) / segments;
+        final float radius = width / 2f;
+        if (segmentHeight <= 0)
+        {
+            return;
+        }
+
+        for (int i = 0; i < segments; i++)
+        {
+            float bottom = height - i * (segmentHeight + gap);
+            float top = bottom - segmentHeight;
+            mModernRect.set(0, top, width, bottom);
+
+            boolean lit = (mLevel * segments) > (i + 0.35);
+            int color;
+            if (!lit)
+            {
+                color = 0x2EFFFFFF;
+            }
+            else if (i >= segments - 2)
+            {
+                color = 0xFFE5484D;
+            }
+            else if (i >= segments - 5)
+            {
+                color = 0xFFFFC107;
+            }
+            else
+            {
+                color = 0xFF2FBF71;
+            }
+            mModernPaint.setColor(color);
+            canvas.drawRoundRect(mModernRect, radius, radius, mModernPaint);
+        }
+    }
+
     private void drawBar(Canvas canvas)
     {
+        if (mModernStyle)
+        {
+            drawModernBar(canvas);
+            return;
+        }
         // System.out.println("BarLevelDrawable:drawBar");
 
         int padding = 4; // Padding on both sides.
