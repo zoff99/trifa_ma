@@ -56,11 +56,10 @@ public class TRIFAGlobals
     final static String NOTIFICATION_NTFY_PUSH_URL_PREFIX = "https://ntfy.sh/";
     final static String NOTIFICATION_SUNUP_PUSH_URL_PREFIX = "https://updates.push.services.mozilla.com/wpush/";
 
-    final static String TOX_PUSH_MSG_APP_WEBDOWNLOAD = "https://github.com/zoff99/tox_push_msg_app/releases/latest/download/play.pushmsg.apk";
-    final static String TOX_PUSH_MSG_APP_PLAYSTORE = "https://play.google.com/store/apps/details?id=com.zoffcc.applications.pushmsg";
-    final static String TOX_PUSH_SETUP_HOWTO_URL = "https://zoff99.github.io/ToxAndroidRefImpl/PUSH_NOTIFICATION.html";
+    final static String TOX_PUSH_MSG_APP_WEBDOWNLOAD = "https://github.com/zoff99/tox_push_msg_app_2/releases/latest/download/play.pushmsg2.apk";
+    final static String TOX_PUSH_SETUP_HOWTO_URL = "https://github.com/zoff99/trifa_ma/blob/master/PUSH_NOTIFICATION.md";
 
-    final static String TRIFA_GITHUB_REPO_URL = "https://github.com/zoff99/ToxAndroidRefImpl";
+    final static String TRIFA_GITHUB_REPO_URL = "https://github.com/zoff99/trifa_ma";
     final static String TRIFA_GITHUB_NEW_ISSUE_URL = TRIFA_GITHUB_REPO_URL + "/issues/new";
 
     final static int FAST_ITERATION_THRESHOLD_MS = 15;

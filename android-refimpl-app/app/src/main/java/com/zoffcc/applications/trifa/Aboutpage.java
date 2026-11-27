@@ -63,7 +63,7 @@ public class Aboutpage extends AppCompatActivity implements Logging.AsyncRespons
             AboutPage aboutPage = new AboutPage(this).
                     isRTL(false).
                     setImage(R.drawable.web_hi_res_512).
-                    addWebsite("https://github.com/zoff99/ToxAndroidRefImpl/blob/zoff99/dev003/README.md");
+                    addWebsite("https://github.com/zoff99/trifa_ma/blob/master/README.md");
 
             String abis = "??";
             try
@@ -136,14 +136,14 @@ public class Aboutpage extends AppCompatActivity implements Logging.AsyncRespons
             Element trifa_commit = new Element();
             trifa_commit.setTitle("TRIfA commit hash link");
             Intent trifa_commit_page = new Intent(Intent.ACTION_VIEW, Uri.parse(
-                    "https://github.com/zoff99/ToxAndroidRefImpl/commit/" + BuildConfig.GitHash));
+                    "https://github.com/zoff99/trifa_ma/commit/" + BuildConfig.GitHash));
             trifa_commit.setIntent(trifa_commit_page);
             aboutPage.addItem(trifa_commit);
 
             Element jni_commit = new Element();
             jni_commit.setTitle("JNI commit hash link");
             Intent jni_commit_page = new Intent(Intent.ACTION_VIEW, Uri.parse(
-                    "https://github.com/zoff99/ToxAndroidRefImpl/commit/" + MainActivity.getNativeLibGITHASH()));
+                    "https://github.com/zoff99/trifa_ma/commit/" + MainActivity.getNativeLibGITHASH()));
             jni_commit.setIntent(jni_commit_page);
             aboutPage.addItem(jni_commit);
 
