@@ -565,7 +565,6 @@ public class MainActivity extends AppCompatActivity
     static int PREF__global_font_size = PREF_GLOBAL_FONT_SIZE_DEFAULT;
     static boolean PREF__allow_open_encrypted_file_via_intent = false;
     static boolean PREF__allow_file_sharing_to_trifa_via_intent = true;
-    static boolean PREF__compact_chatlist = true;
     static boolean PREF__use_push_service = true;
     static String[] PREF__toxirc_muted_peers = {};
     static boolean PREF__hide_setup_push_tip = false;
@@ -1643,7 +1642,6 @@ public class MainActivity extends AppCompatActivity
             PREF__allow_open_encrypted_file_via_intent = false;
         }
 
-        PREF__compact_chatlist = true;
 
         try
         {
@@ -4359,7 +4357,6 @@ public class MainActivity extends AppCompatActivity
             PREF__allow_open_encrypted_file_via_intent = false;
         }
 
-        PREF__compact_chatlist = true;
 
         try
         {
