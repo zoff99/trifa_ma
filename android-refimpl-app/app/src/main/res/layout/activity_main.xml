@@ -96,6 +96,16 @@
                         android:orientation="horizontal"
                         android:gravity="center_vertical">
 
+                        <!-- All non-search row items live in this container so the
+                             search field can take over the whole row when open. -->
+                        <LinearLayout
+                            android:id="@+id/main_status_items"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical">
+
                         <TextView
                             android:id="@+id/main_maintext"
                             android:layout_width="wrap_content"
@@ -244,12 +254,18 @@
                             android:layout_height="0dp"
                             android:layout_weight="1" />
 
+                        </LinearLayout>
+
                         <EditText
                             android:id="@+id/main_search_edittext"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:layout_weight="1"
-                            android:hint="Filter..."
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginTop="8dp"
+                            android:layout_marginRight="4dp"
+                            android:layout_marginBottom="8dp"
+                            android:hint="@string/main_search_hint"
                             android:visibility="gone"
                             android:singleLine="true"
                             android:imeOptions="actionDone"
@@ -257,9 +273,9 @@
                             android:background="@drawable/main_list_search_bg"
                             android:paddingLeft="14dp"
                             android:paddingRight="14dp"
+                            android:textSize="15sp"
                             android:textColor="@color/main_list_text"
-                            android:textColorHint="@color/main_list_metadata"
-                            tools:ignore="HardcodedText" />
+                            android:textColorHint="@color/main_list_metadata" />
 
                         <ImageView
                             android:id="@+id/main_search_icon"
@@ -271,13 +287,12 @@
                             android:paddingRight="8dp"
                             android:paddingBottom="0dp"
                             android:scaleType="fitCenter"
-                            android:src="@drawable/ic_search"
-                            android:contentDescription="Search friends"
+                            android:src="@drawable/main_search_open"
+                            android:contentDescription="@string/main_search_open_desc"
                             android:clickable="true"
                             android:focusable="true"
                             android:background="?android:attr/selectableItemBackgroundBorderless"
-                            android:tooltipText="Search / filter friend list"
-                            tools:ignore="HardcodedText" />
+                            android:tooltipText="@string/main_search_open_desc" />
 
                         <View
                             android:layout_width="6dp"
