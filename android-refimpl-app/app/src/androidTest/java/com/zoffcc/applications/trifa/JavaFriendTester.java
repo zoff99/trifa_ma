@@ -99,7 +99,7 @@ public class JavaFriendTester
             {
                 showing_app = true;
             }
-            else if (cur_act.equals("com.zoffcc.applications.trifa.CheckPasswordActivity"))
+            else if (cur_act.equals("com.zoffcc.applications.trifa.SetPasswordActivity"))
             {
                 showing_app = true;
             }
@@ -122,7 +122,7 @@ public class JavaFriendTester
             screenshot("002a");
             onView(withId(R.id.set_button_2)).perform(click());
         }
-        else if (cur_act.equals("com.zoffcc.applications.trifa.CheckPasswordActivity"))
+        else if (cur_act.equals("com.zoffcc.applications.trifa.SetPasswordActivity"))
         {
             onView(withId(R.id.password_1)).perform(replaceText(MOCK_PASSWORD));
             onView(withId(R.id.password_2)).perform(replaceText(MOCK_PASSWORD));
