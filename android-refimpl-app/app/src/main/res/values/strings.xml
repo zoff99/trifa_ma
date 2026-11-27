@@ -593,4 +593,14 @@
         <item quantity="other">Delete %d selected messages? This cannot be undone.</item>
     </plurals>
 
+    <string name="call_speaker_on">Speaker on</string>
+    <string name="call_speaker_off">Speaker off</string>
+    <string name="call_mute">Mute microphone</string>
+    <string name="call_unmute">Unmute microphone</string>
+    <string name="call_switch_camera">Switch camera</string>
+    <string name="call_end">End call</string>
+    <string name="call_accept">Accept call</string>
+    <string name="call_audio">Audio call</string>
+    <string name="call_video">Video call</string>
+    <string name="call_waiting_title">Waiting for friend to come online…</string>
 </resources>

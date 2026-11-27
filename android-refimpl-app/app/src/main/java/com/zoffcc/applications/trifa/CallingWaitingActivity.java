@@ -22,7 +22,6 @@ package com.zoffcc.applications.trifa;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -30,8 +29,6 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import com.mikepenz.google_material_typeface_library.GoogleMaterial;
-import com.mikepenz.iconics.IconicsDrawable;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -82,9 +79,9 @@ public class CallingWaitingActivity extends AppCompatActivity
         call_waiting_friend_name = findViewById(R.id.call_waiting_friend_name);
         call_waiting_friend_name.setText("");
 
-        final Drawable d3 = new IconicsDrawable(this).icon(GoogleMaterial.Icon.gmd_highlight_off).backgroundColor(
-                Color.TRANSPARENT).color(Color.parseColor("#A0FF0000")).sizeDp(50);
-        decline_waiting_button.setImageDrawable(d3);
+        decline_waiting_button.setImageResource(R.drawable.call_ic_end);
+        decline_waiting_button.setBackgroundResource(R.drawable.call_btn_end);
+        decline_waiting_button.setColorFilter(Color.WHITE);
 
         decline_waiting_button.setOnTouchListener(new View.OnTouchListener()
         {

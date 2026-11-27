@@ -1,0 +1,4 @@
+<!-- Original TRIfAma call artwork. SPDX-License-Identifier: GPL-2.0-or-later -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android" android:width="24dp" android:height="24dp" android:viewportWidth="24" android:viewportHeight="24">
+    <path android:fillColor="#FFFFFFFF" android:pathData="M3,9v6h4l5,4V5L7,9zM16,8a5,5 0,0 1,0,8v-2a3,3 0,0 0,0,-4zM18,5a9,9 0,0 1,0,14v-2a7,7 0,0 0,0,-10z" />
+</vector>

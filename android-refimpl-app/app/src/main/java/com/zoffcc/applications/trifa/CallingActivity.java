@@ -61,8 +61,6 @@ import android.widget.TextView;
 
 import com.etiennelawlor.discreteslider.library.ui.DiscreteSlider;
 import com.google.speech.levelmeter.BarLevelDrawable;
-import com.mikepenz.google_material_typeface_library.GoogleMaterial;
-import com.mikepenz.iconics.IconicsDrawable;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -142,7 +140,7 @@ public class CallingActivity extends AppCompatActivity implements CameraWrapper.
     ImageButton decline_button = null;
     static ImageButton camera_toggle_button = null;
     static ImageButton mute_button = null;
-    static Button video_box_speaker_button = null;
+    static ImageButton video_box_speaker_button = null;
     static Button video_box_aec_button = null;
     static View video_speaker_aec = null;
     static View video_box_aec = null;
@@ -151,6 +149,7 @@ public class CallingActivity extends AppCompatActivity implements CameraWrapper.
     static View calling_friend_online_status = null;
     static ImageView audio_device_icon = null;
     static TextView top_text_line = null;
+    static TextView call_subtitle = null;
     static CallingActivity ca = null;
     static String top_text_line_str1 = "";
     static String top_text_line_str2 = "";
@@ -279,6 +278,7 @@ public class CallingActivity extends AppCompatActivity implements CameraWrapper.
         Log.i(TAG, "pref:get:PREF__audio_play_volume_percent=" + PREF__audio_play_volume_percent);
 
         top_text_line = (TextView) findViewById(R.id.top_text_line);
+        call_subtitle = (TextView) findViewById(R.id.call_subtitle);
         accept_button = (ImageButton) findViewById(R.id.accept_button);
         decline_button = (ImageButton) findViewById(R.id.decline_button);
         camera_toggle_button = (ImageButton) findViewById(R.id.camera_toggle_button);
@@ -563,9 +563,8 @@ public class CallingActivity extends AppCompatActivity implements CameraWrapper.
 
         try
         {
-            final Drawable d1 = new IconicsDrawable(this).icon(GoogleMaterial.Icon.gmd_face).color(
-                    getResources().getColor(R.color.colorPrimaryDark)).sizeDp(200);
-            caller_avatar_view.setImageDrawable(d1);
+            caller_avatar_view.setImageResource(R.drawable.chat_ic_person);
+            final Drawable d1 = caller_avatar_view.getDrawable();
 
             String fname = get_vfs_image_filename_friend_avatar(
                     tox_friend_by_public_key__wrapper(Callstate.friend_pubkey));
@@ -768,18 +767,14 @@ public class CallingActivity extends AppCompatActivity implements CameraWrapper.
         {
             if (!dh._Detect())
             {
-                video_box_speaker_button.setText("Speaker: ON");
                 AudioManager manager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
                 set_audio_to_loudspeaker(manager);
-            }
-            else
-            {
-                video_box_speaker_button.setText("Speaker: OFF");
             }
         }
         catch (Exception ignored)
         {
         }
+        update_speaker_button();
 
         video_box_speaker_button.setOnTouchListener(new View.OnTouchListener()
         {
@@ -790,14 +785,7 @@ public class CallingActivity extends AppCompatActivity implements CameraWrapper.
                 {
                     try
                     {
-                        if (Callstate.audio_speaker == false)
-                        {
-                            video_box_speaker_button.setText("Speaker: OFF");
-                        }
-                        else
-                        {
-                            video_box_speaker_button.setText("Speaker: ON");
-                        }
+                        update_speaker_button();
                     }
                     catch (Exception e)
                     {
@@ -811,13 +799,12 @@ public class CallingActivity extends AppCompatActivity implements CameraWrapper.
                         if (Callstate.audio_speaker == false)
                         {
                             set_audio_to_loudspeaker(audio_manager_s);
-                            video_box_speaker_button.setText("Speaker: ON");
                         }
                         else
                         {
                             set_audio_to_ear(audio_manager_s);
-                            video_box_speaker_button.setText("Speaker: OFF");
                         }
+                        update_speaker_button();
                     }
                     catch (Exception e)
                     {
@@ -962,12 +949,12 @@ public class CallingActivity extends AppCompatActivity implements CameraWrapper.
 
         if (PREF__X_misc_button_enabled)
         {
-            misc_button.setVisibility(View.VISIBLE);
-            misc_button_pad.setVisibility(View.VISIBLE);
+            set_call_action_visible(misc_button, true);
+            misc_button_pad.setVisibility(View.GONE);
 
-            Drawable d8 = new IconicsDrawable(this).icon(GoogleMaterial.Icon.gmd_touch_app).backgroundColor(
-                    Color.TRANSPARENT).color(getResources().getColor(R.color.colorPrimaryDark)).sizeDp(50);
-            misc_button.setImageDrawable(d8);
+            misc_button.setImageResource(R.drawable.chat_ic_more);
+            misc_button.setBackgroundResource(R.drawable.call_btn_neutral);
+            misc_button.setColorFilter(Color.WHITE);
 
             misc_button.setOnTouchListener(new View.OnTouchListener()
             {
@@ -978,10 +965,8 @@ public class CallingActivity extends AppCompatActivity implements CameraWrapper.
                     {
                         try
                         {
-                            Drawable d1a = new IconicsDrawable(v.getContext()).icon(
-                                    GoogleMaterial.Icon.gmd_touch_app).backgroundColor(Color.TRANSPARENT).color(
-                                    getResources().getColor(R.color.md_green_600)).sizeDp(50);
-                            misc_button.setImageDrawable(d1a);
+                            misc_button.setBackgroundResource(R.drawable.call_btn_active);
+                            misc_button.setColorFilter(Color.parseColor("#171E24"));
                         }
                         catch (Exception e)
                         {
@@ -992,10 +977,8 @@ public class CallingActivity extends AppCompatActivity implements CameraWrapper.
                     {
                         try
                         {
-                            Drawable d2a = new IconicsDrawable(v.getContext()).icon(
-                                    GoogleMaterial.Icon.gmd_touch_app).backgroundColor(Color.TRANSPARENT).color(
-                                    getResources().getColor(R.color.colorPrimaryDark)).sizeDp(50);
-                            misc_button.setImageDrawable(d2a);
+                            misc_button.setBackgroundResource(R.drawable.call_btn_neutral);
+                            misc_button.setColorFilter(Color.WHITE);
 
                             // send misc. message to friend, and do NOT save to DB
                             // TODO: use new functions to send the message
@@ -1019,13 +1002,11 @@ public class CallingActivity extends AppCompatActivity implements CameraWrapper.
         }
         else
         {
-            misc_button.setVisibility(View.GONE);
+            set_call_action_visible(misc_button, false);
             misc_button_pad.setVisibility(View.GONE);
         }
 
-        final Drawable d1 = new IconicsDrawable(this).icon(GoogleMaterial.Icon.gmd_mic).backgroundColor(
-                Color.TRANSPARENT).color(getResources().getColor(R.color.colorPrimaryDark)).sizeDp(50);
-        mute_button.setImageDrawable(d1);
+        update_mute_button();
         mute_button.setOnTouchListener(new View.OnTouchListener()
         {
             @Override
@@ -1038,17 +1019,11 @@ public class CallingActivity extends AppCompatActivity implements CameraWrapper.
                         // if (audio_manager_s.isMicrophoneMute())
                         if (trifa_is_MicrophoneMute)
                         {
-                            Drawable d1a = new IconicsDrawable(v.getContext()).icon(
-                                    GoogleMaterial.Icon.gmd_mic_off).backgroundColor(Color.TRANSPARENT).color(
-                                    getResources().getColor(R.color.md_green_600)).sizeDp(50);
-                            mute_button.setImageDrawable(d1a);
+                            update_mute_button();
                         }
                         else
                         {
-                            Drawable d1a = new IconicsDrawable(v.getContext()).icon(
-                                    GoogleMaterial.Icon.gmd_mic).backgroundColor(Color.TRANSPARENT).color(
-                                    getResources().getColor(R.color.md_green_600)).sizeDp(50);
-                            mute_button.setImageDrawable(d1a);
+                            update_mute_button();
                         }
                     }
                     catch (Exception e)
@@ -1065,19 +1040,13 @@ public class CallingActivity extends AppCompatActivity implements CameraWrapper.
                         {
                             audio_manager_s.setMicrophoneMute(false);
                             trifa_is_MicrophoneMute = false;
-                            Drawable d2a = new IconicsDrawable(v.getContext()).icon(
-                                    GoogleMaterial.Icon.gmd_mic).backgroundColor(Color.TRANSPARENT).color(
-                                    getResources().getColor(R.color.colorPrimaryDark)).sizeDp(50);
-                            mute_button.setImageDrawable(d2a);
+                            update_mute_button();
                         }
                         else
                         {
                             audio_manager_s.setMicrophoneMute(true);
                             trifa_is_MicrophoneMute = true;
-                            Drawable d2a = new IconicsDrawable(v.getContext()).icon(
-                                    GoogleMaterial.Icon.gmd_mic_off).backgroundColor(Color.TRANSPARENT).color(
-                                    getResources().getColor(R.color.colorPrimaryDark)).sizeDp(50);
-                            mute_button.setImageDrawable(d2a);
+                            update_mute_button();
                             audio_bar_in_v.setLevel(0);
                         }
                     }
@@ -1094,22 +1063,24 @@ public class CallingActivity extends AppCompatActivity implements CameraWrapper.
         // on startup always use front camera
         active_camera_type = FRONT_CAMERA_USED;
 
-        final Drawable d3 = new IconicsDrawable(this).icon(GoogleMaterial.Icon.gmd_highlight_off).backgroundColor(
-                Color.TRANSPARENT).color(Color.parseColor("#A0FF0000")).sizeDp(50);
-        decline_button.setImageDrawable(d3);
-        // #AARRGGBB
-
-        final Drawable d4 = new IconicsDrawable(this).icon(GoogleMaterial.Icon.gmd_check_circle).backgroundColor(
-                Color.TRANSPARENT).color(Color.parseColor("#EF088A29")).sizeDp(50);
-        accept_button.setImageDrawable(d4);
+        decline_button.setImageResource(R.drawable.call_ic_end);
+        decline_button.setBackgroundResource(R.drawable.call_btn_end);
+        decline_button.setColorFilter(Color.WHITE);
+        accept_button.setImageResource(R.drawable.call_ic_accept);
+        accept_button.setBackgroundResource(R.drawable.call_btn_accept);
+        accept_button.setColorFilter(Color.WHITE);
 
         if (Callstate.accepted_call == 1)
         {
             // HINT: also when starting a call ourselves!!
-            caller_avatar_view.setVisibility(View.VISIBLE);
-            accept_button.setVisibility(View.GONE);
-            camera_toggle_button.setVisibility(View.VISIBLE);
-            mute_button.setVisibility(View.VISIBLE);
+            caller_avatar_view.setVisibility(Callstate.audio_call ? View.VISIBLE : View.GONE);
+            set_call_action_visible(accept_button, false);
+            set_call_action_visible(camera_toggle_button, !Callstate.audio_call);
+            set_call_action_visible(mute_button, true);
+            video_speaker_aec.setVisibility(View.VISIBLE);
+            update_speaker_button();
+            update_mute_button();
+            update_camera_button();
 
             stop_ringtone();
             set_calling_audio_mode();
@@ -1117,25 +1088,24 @@ public class CallingActivity extends AppCompatActivity implements CameraWrapper.
         else
         {
             caller_avatar_view.setVisibility(View.VISIBLE);
-            accept_button.setVisibility(View.VISIBLE);
-            camera_toggle_button.setVisibility(View.GONE);
-            mute_button.setVisibility(View.GONE);
+            set_call_action_visible(accept_button, true);
+            set_call_action_visible(camera_toggle_button, false);
+            set_call_action_visible(mute_button, false);
+            video_speaker_aec.setVisibility(View.GONE);
+            update_mute_button();
+            update_camera_button();
 
             start_ringtone();
         }
 
         if (active_camera_type == FRONT_CAMERA_USED)
         {
-            final Drawable d5 = new IconicsDrawable(this).icon(GoogleMaterial.Icon.gmd_camera_front).backgroundColor(
-                    Color.TRANSPARENT).color(getResources().getColor(R.color.colorPrimaryDark)).sizeDp(50);
-            camera_toggle_button.setImageDrawable(d5);
+            update_camera_button();
             Log.i(TAG, "active_camera_type(5)=" + active_camera_type);
         }
         else
         {
-            final Drawable d6 = new IconicsDrawable(this).icon(GoogleMaterial.Icon.gmd_camera_rear).backgroundColor(
-                    Color.TRANSPARENT).color(getResources().getColor(R.color.colorPrimaryDark)).sizeDp(50);
-            camera_toggle_button.setImageDrawable(d6);
+            update_camera_button();
             Log.i(TAG, "active_camera_type(6)=" + active_camera_type);
         }
 
@@ -1151,17 +1121,11 @@ public class CallingActivity extends AppCompatActivity implements CameraWrapper.
 
                     if (active_camera_type == FRONT_CAMERA_USED)
                     {
-                        Drawable d2a = new IconicsDrawable(v.getContext()).icon(
-                                GoogleMaterial.Icon.gmd_camera_front).backgroundColor(Color.TRANSPARENT).color(
-                                getResources().getColor(R.color.md_green_600)).sizeDp(7);
-                        camera_toggle_button.setImageDrawable(d2a);
+                        update_camera_button();
                     }
                     else
                     {
-                        Drawable d2a = new IconicsDrawable(v.getContext()).icon(
-                                GoogleMaterial.Icon.gmd_camera_rear).backgroundColor(Color.TRANSPARENT).color(
-                                getResources().getColor(R.color.md_green_600)).sizeDp(7);
-                        camera_toggle_button.setImageDrawable(d2a);
+                        update_camera_button();
                     }
                 }
                 else
@@ -1170,17 +1134,11 @@ public class CallingActivity extends AppCompatActivity implements CameraWrapper.
 
                     if (active_camera_type == FRONT_CAMERA_USED)
                     {
-                        Drawable d2a = new IconicsDrawable(v.getContext()).icon(
-                                GoogleMaterial.Icon.gmd_camera_rear).backgroundColor(Color.TRANSPARENT).color(
-                                getResources().getColor(R.color.colorPrimaryDark)).sizeDp(7);
-                        camera_toggle_button.setImageDrawable(d2a);
+                        update_camera_button();
                     }
                     else
                     {
-                        Drawable d2a = new IconicsDrawable(v.getContext()).icon(
-                                GoogleMaterial.Icon.gmd_camera_front).backgroundColor(Color.TRANSPARENT).color(
-                                getResources().getColor(R.color.colorPrimaryDark)).sizeDp(7);
-                        camera_toggle_button.setImageDrawable(d2a);
+                        update_camera_button();
                     }
 
                     camera_toggle_button_pressed = true;
@@ -1277,10 +1235,14 @@ public class CallingActivity extends AppCompatActivity implements CameraWrapper.
                             Callstate.accepted_call = 1;
                             Log.i(TAG, "accept_button:onTouch:005");
 
-                            caller_avatar_view.setVisibility(View.GONE);
-                            accept_button.setVisibility(View.GONE);
-                            camera_toggle_button.setVisibility(View.VISIBLE);
-                            mute_button.setVisibility(View.VISIBLE);
+                            caller_avatar_view.setVisibility(Callstate.audio_call ? View.VISIBLE : View.GONE);
+                            set_call_action_visible(accept_button, false);
+                            set_call_action_visible(camera_toggle_button, !Callstate.audio_call);
+                            set_call_action_visible(mute_button, true);
+                            video_speaker_aec.setVisibility(View.VISIBLE);
+                            update_speaker_button();
+                            update_mute_button();
+                            update_camera_button();
 
                             Callstate.call_start_timestamp = System.currentTimeMillis();
                             String a = "" +
@@ -1442,6 +1404,80 @@ public class CallingActivity extends AppCompatActivity implements CameraWrapper.
         // close calling activity --------
     }
 
+    static void set_call_action_visible(View button, boolean visible)
+    {
+        if (button == null)
+        {
+            return;
+        }
+        int v = visible ? View.VISIBLE : View.GONE;
+        button.setVisibility(v);
+        if (button.getParent() instanceof View)
+        {
+            ((View) button.getParent()).setVisibility(v);
+        }
+    }
+
+    static void update_speaker_button()
+    {
+        if (video_box_speaker_button == null)
+        {
+            return;
+        }
+        boolean on = Callstate.audio_speaker;
+        video_box_speaker_button.setImageResource(R.drawable.call_ic_speaker);
+        video_box_speaker_button.setBackgroundResource(on ? R.drawable.call_btn_active : R.drawable.call_btn_neutral);
+        video_box_speaker_button.setColorFilter(on ? Color.parseColor("#171E24") : Color.WHITE);
+        if (ca != null)
+        {
+            video_box_speaker_button.setContentDescription(
+                    ca.getString(on ? R.string.call_speaker_on : R.string.call_speaker_off));
+        }
+    }
+
+    static void update_mute_button()
+    {
+        if (mute_button == null)
+        {
+            return;
+        }
+        boolean muted = trifa_is_MicrophoneMute;
+        mute_button.setImageResource(muted ? R.drawable.call_ic_mic_off : R.drawable.call_ic_mic);
+        mute_button.setBackgroundResource(muted ? R.drawable.call_btn_active : R.drawable.call_btn_neutral);
+        mute_button.setColorFilter(muted ? Color.parseColor("#171E24") : Color.WHITE);
+        if (ca != null)
+        {
+            mute_button.setContentDescription(ca.getString(muted ? R.string.call_unmute : R.string.call_mute));
+        }
+    }
+
+    static void update_camera_button()
+    {
+        if (camera_toggle_button == null)
+        {
+            return;
+        }
+        camera_toggle_button.setImageResource(R.drawable.call_ic_camera_switch);
+        camera_toggle_button.setBackgroundResource(R.drawable.call_btn_neutral);
+        camera_toggle_button.setColorFilter(Color.WHITE);
+    }
+
+    static void update_call_subtitle()
+    {
+        if (call_subtitle == null || ca == null)
+        {
+            return;
+        }
+        if (top_text_line_str2 != null && top_text_line_str2.length() > 0)
+        {
+            call_subtitle.setText(top_text_line_str2);
+        }
+        else
+        {
+            call_subtitle.setText(ca.getString(Callstate.audio_call ? R.string.call_audio : R.string.call_video));
+        }
+    }
+
     synchronized public static void update_top_text_line()
     {
         // Log.i(TAG, "update_top_text_line(1):top_text_line_str3=" + top_text_line_str3);
@@ -1506,23 +1542,8 @@ public class CallingActivity extends AppCompatActivity implements CameraWrapper.
                 {
                     // Log.i(TAG, "update_top_text_line(2c):top_text_line_str3=" + top_text_line_str3);
 
-                    if ((top_text_line_str3 != "") || (top_text_line_str4 != ""))
-                    {
-                        top_text_line.setText(
-                                top_text_line_str1 + ":" + top_text_line_str2 + ":" + top_text_line_str3 + ":" +
-                                top_text_line_str4);
-                    }
-                    else
-                    {
-                        if (top_text_line_str2 != "")
-                        {
-                            top_text_line.setText(top_text_line_str1 + ":" + top_text_line_str2);
-                        }
-                        else
-                        {
-                            top_text_line.setText(top_text_line_str1);
-                        }
-                    }
+                    top_text_line.setText(top_text_line_str1);
+                    update_call_subtitle();
                 }
                 catch (Exception e)
                 {
@@ -2455,85 +2476,28 @@ public class CallingActivity extends AppCompatActivity implements CameraWrapper.
 
     static void toggle_osd_views(boolean visible, boolean for_audio_call)
     {
-        if (visible)
+        Runnable myRunnable = new Runnable()
         {
-            Runnable myRunnable = new Runnable()
+            @Override
+            public void run()
             {
-                @Override
-                public void run()
+                try
                 {
-                    try
-                    {
-                        CallingActivity.video_box_left_top_01.setVisibility(View.VISIBLE);
-
-                        CallingActivity.video_box_right_top_01.setVisibility(View.VISIBLE);
-                        CallingActivity.right_top_text_1.setVisibility(View.VISIBLE);
-                        CallingActivity.right_top_text_1b.setVisibility(View.VISIBLE);
-                        CallingActivity.right_top_text_2.setVisibility(View.VISIBLE);
-                        CallingActivity.right_top_text_3.setVisibility(View.VISIBLE);
-                        CallingActivity.right_top_text_4.setVisibility(View.VISIBLE);
-                        CallingActivity.box_right_volumeslider_01.setVisibility(View.VISIBLE);
-
-//                        CallingActivity.video_add_delay_slider_infotext_01.setVisibility(View.VISIBLE);
-//                        CallingActivity.video_add_delay_slider_seekbar_01.setVisibility(View.VISIBLE);
-                        CallingActivity.video_box_aec.setVisibility(View.VISIBLE);
-                        CallingActivity.video_speaker_aec.setVisibility(View.VISIBLE);
-                    }
-                    catch (Exception e)
-                    {
-                        e.printStackTrace();
-                    }
-
+                    // Keep the call surface clean; legacy OSD/debug widgets stay hidden.
+                    CallingActivity.video_box_left_top_01.setVisibility(View.GONE);
+                    CallingActivity.video_box_right_top_01.setVisibility(View.GONE);
+                    CallingActivity.box_right_volumeslider_01.setVisibility(View.GONE);
+                    CallingActivity.video_box_aec.setVisibility(View.GONE);
+                    CallingActivity.video_speaker_aec.setVisibility(
+                            Callstate.accepted_call == 1 ? View.VISIBLE : View.GONE);
                 }
-            };
-            CallingActivity.callactivity_handler_s.post(myRunnable);
-        }
-        else
-        {
-            Runnable myRunnable = new Runnable()
-            {
-                @Override
-                public void run()
+                catch (Exception e)
                 {
-                    try
-                    {
-                        if (for_audio_call)
-                        {
-                            CallingActivity.video_box_left_top_01.setVisibility(View.VISIBLE);
-                            CallingActivity.video_box_right_top_01.setVisibility(View.VISIBLE);
-                            CallingActivity.right_top_text_1.setVisibility(View.INVISIBLE);
-                            CallingActivity.right_top_text_1b.setVisibility(View.INVISIBLE);
-                            CallingActivity.right_top_text_2.setVisibility(View.INVISIBLE);
-                            CallingActivity.right_top_text_3.setVisibility(View.INVISIBLE);
-                            CallingActivity.right_top_text_4.setVisibility(View.INVISIBLE);
-                            CallingActivity.box_right_volumeslider_01.setVisibility(View.VISIBLE);
-
-//                            CallingActivity.video_add_delay_slider_infotext_01.setVisibility(View.INVISIBLE);
-//                            CallingActivity.video_add_delay_slider_seekbar_01.setVisibility(View.INVISIBLE);
-                            CallingActivity.video_box_aec.setVisibility(View.VISIBLE);
-                            CallingActivity.video_speaker_aec.setVisibility(View.VISIBLE);
-
-                        }
-                        else
-                        {
-                            CallingActivity.video_box_left_top_01.setVisibility(View.INVISIBLE);
-                            CallingActivity.video_box_right_top_01.setVisibility(View.INVISIBLE);
-                            CallingActivity.box_right_volumeslider_01.setVisibility(View.INVISIBLE);
-//                            CallingActivity.video_add_delay_slider_infotext_01.setVisibility(View.INVISIBLE);
-//                            CallingActivity.video_add_delay_slider_seekbar_01.setVisibility(View.INVISIBLE);
-                            CallingActivity.video_box_aec.setVisibility(View.INVISIBLE);
-                            CallingActivity.video_speaker_aec.setVisibility(View.INVISIBLE);
-                        }
-                    }
-                    catch (Exception e)
-                    {
-                        e.printStackTrace();
-                    }
-
+                    e.printStackTrace();
                 }
-            };
-            CallingActivity.callactivity_handler_s.post(myRunnable);
-        }
+            }
+        };
+        CallingActivity.callactivity_handler_s.post(myRunnable);
     }
 
     void update_call_time()
@@ -2543,8 +2507,13 @@ public class CallingActivity extends AppCompatActivity implements CameraWrapper.
             if (Callstate.call_start_timestamp != -1)
             {
 
-                right_left_text_1.setText(format_timeduration_from_seconds(
-                        (System.currentTimeMillis() - Callstate.call_start_timestamp) / 1000));
+                String duration = format_timeduration_from_seconds(
+                        (System.currentTimeMillis() - Callstate.call_start_timestamp) / 1000);
+                right_left_text_1.setText(duration);
+                if (call_subtitle != null)
+                {
+                    call_subtitle.setText(duration);
+                }
             }
             else
             {
@@ -2576,18 +2545,14 @@ public class CallingActivity extends AppCompatActivity implements CameraWrapper.
                     else if (Callstate.audio_device == 1)
                     {
                         Log.i(TAG, "update_audio_device_icon:headset");
-                        Drawable d4 = new IconicsDrawable(ca).icon(GoogleMaterial.Icon.gmd_headset).backgroundColor(
-                                Color.TRANSPARENT).color(ca.getResources().getColor(R.color.colorPrimaryDark)).sizeDp(
-                                80);
-                        audio_device_icon.setImageDrawable(d4);
+                        audio_device_icon.setImageResource(R.drawable.call_ic_headset);
+                        audio_device_icon.setColorFilter(Color.WHITE);
                     }
                     else if (Callstate.audio_device == 2)
                     {
                         Log.i(TAG, "update_audio_device_icon:bluetooth");
-                        Drawable d4 = new IconicsDrawable(ca).icon(
-                                GoogleMaterial.Icon.gmd_bluetooth_audio).backgroundColor(Color.TRANSPARENT).color(
-                                ca.getResources().getColor(R.color.colorPrimaryDark)).sizeDp(80);
-                        audio_device_icon.setImageDrawable(d4);
+                        audio_device_icon.setImageResource(R.drawable.call_ic_bluetooth);
+                        audio_device_icon.setColorFilter(Color.WHITE);
                     }
                     else // audio_device == ??
                     {
@@ -2722,9 +2687,18 @@ public class CallingActivity extends AppCompatActivity implements CameraWrapper.
             {
                 try
                 {
-                    CallingActivity.video_box_self_preview_01.setVisibility(View.VISIBLE);
-                    CallingActivity.video_box_left_top_01.setVisibility(View.VISIBLE);
-                    CallingActivity.video_box_right_top_01.setVisibility(View.VISIBLE);
+                    CallingActivity.video_box_self_preview_01.setVisibility(
+                            Callstate.audio_call ? View.GONE : View.VISIBLE);
+                    CallingActivity.video_speaker_aec.setVisibility(View.VISIBLE);
+                    CallingActivity.caller_avatar_view.setVisibility(
+                            Callstate.audio_call ? View.VISIBLE : View.GONE);
+                    set_call_action_visible(accept_button, false);
+                    set_call_action_visible(camera_toggle_button, !Callstate.audio_call);
+                    set_call_action_visible(mute_button, true);
+                    update_speaker_button();
+                    update_mute_button();
+                    update_camera_button();
+                    update_call_subtitle();
                 }
                 catch (Exception e)
                 {
