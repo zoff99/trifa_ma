@@ -74,7 +74,7 @@
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:icon="@mipmap/ic_launcher4"
         android:roundIcon="@mipmap/ic_launcher4_round"
-        android:label="TRIfA"
+        android:label="TRIfAma"
         android:supportsRtl="true"
         android:requestLegacyExternalStorage="false"
         android:theme="@style/AppTheme"
@@ -203,10 +203,6 @@
         </activity>
         <activity
             android:name=".ImageviewerActivity"
-            android:configChanges="screenSize|locale|touchscreen|navigation|orientation|fontScale|keyboard|keyboardHidden">
-        </activity>
-        <activity
-            android:name=".ImageviewerActivity_SD"
             android:configChanges="screenSize|locale|touchscreen|navigation|orientation|fontScale|keyboard|keyboardHidden">
         </activity>
         <activity
