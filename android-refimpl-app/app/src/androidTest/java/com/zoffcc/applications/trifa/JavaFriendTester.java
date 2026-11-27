@@ -378,12 +378,11 @@ public class JavaFriendTester
     public void setSharedPrefs()
     {
         SharedPreferences sharedPreferences =
-                PreferenceManager.getDefaultSharedPreferences(getInstrumentation().getContext());
-        SharedPreferences.Editor editor = sharedPreferences.edit() ;
-        editor.putBoolean("window_security", false) ;
-        editor.apply();
+                PreferenceManager.getDefaultSharedPreferences(getInstrumentation().getTargetContext());
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean("window_security", false);
         editor.commit();
-        Log.i(TAG ,"Setting up shared prefs");
+        Log.i(TAG, "Setting up shared prefs");
     }
 
     @Before
