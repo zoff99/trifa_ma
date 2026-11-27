@@ -198,7 +198,7 @@ jobs:
 
       - name: Upload to nightly release
         uses: ncipollo/release-action@v1
-        if: github.event_name == 'push' && github.ref == 'refs/heads/experimental_own_risk'
+        if: github.event_name == 'push' && github.ref == 'refs/heads/master'
         with:
           allowUpdates: true
           tag: nightly
@@ -251,7 +251,7 @@ jobs:
             /home/runner/work/trifa_ma/trifa_ma/android-refimpl-app/logcat.txt
 
       - name: Rename artifact for nightly upload
-        if: github.event_name == 'push' && github.ref == 'refs/heads/experimental_own_risk'
+        if: github.event_name == 'push' && github.ref == 'refs/heads/master'
         run: |
           pwd
           if [ -f /home/runner/work/trifa_ma/trifa_ma/test_outputfiles/test_004b.png ]; then
@@ -266,7 +266,7 @@ jobs:
 
       - name: Upload to nightly release
         uses: ncipollo/release-action@v1
-        if: github.event_name == 'push' && github.ref == 'refs/heads/experimental_own_risk'
+        if: github.event_name == 'push' && github.ref == 'refs/heads/master'
         with:
           allowUpdates: true
           tag: nightly
