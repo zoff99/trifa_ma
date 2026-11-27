@@ -160,33 +160,7 @@
         <FrameLayout
             android:id="@+id/video_box_right_top_01"
             android:layout_width="0dp"
-            android:layout_height="0dp">
-
-            <TextView
-                android:id="@+id/right_top_text_1"
-                android:layout_width="0dp"
-                android:layout_height="0dp" />
-
-            <TextView
-                android:id="@+id/right_top_text_1b"
-                android:layout_width="0dp"
-                android:layout_height="0dp" />
-
-            <TextView
-                android:id="@+id/right_top_text_2"
-                android:layout_width="0dp"
-                android:layout_height="0dp" />
-
-            <TextView
-                android:id="@+id/right_top_text_3"
-                android:layout_width="0dp"
-                android:layout_height="0dp" />
-
-            <TextView
-                android:id="@+id/right_top_text_4"
-                android:layout_width="0dp"
-                android:layout_height="0dp" />
-        </FrameLayout>
+            android:layout_height="0dp" />
 
         <FrameLayout
             android:id="@+id/video_box_right_volumeslider_01"
@@ -272,6 +246,98 @@
         </LinearLayout>
 
     </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/call_debug_panel"
+        android:layout_width="236dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top|end"
+        android:layout_marginTop="92dp"
+        android:layout_marginEnd="16dp"
+        android:background="@drawable/call_debug_panel_bg"
+        android:elevation="12dp"
+        android:orientation="vertical"
+        android:padding="14dp"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/call_debug_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-medium"
+            android:letterSpacing="0.06"
+            android:text="@string/call_debug_title"
+            android:textAllCaps="true"
+            android:textColor="#9AA7B0"
+            android:textSize="11sp" />
+
+        <TextView
+            android:id="@+id/right_top_text_1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:textColor="#E6EDF3"
+            android:textSize="13sp"
+            tools:text="Out H264 · 1200 kbit/s" />
+
+        <TextView
+            android:id="@+id/right_top_text_1b"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:textColor="#E6EDF3"
+            android:textSize="13sp"
+            tools:text="In H264 · 1200 kbit/s" />
+
+        <TextView
+            android:id="@+id/right_top_text_2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:textColor="#E6EDF3"
+            android:textSize="13sp"
+            tools:text="Audio 64 kbit/s · delay 0 ms" />
+
+        <TextView
+            android:id="@+id/right_top_text_3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:textColor="#C7D2DA"
+            android:textSize="13sp"
+            tools:text="In 0 fps" />
+
+        <TextView
+            android:id="@+id/right_top_text_4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:textColor="#C7D2DA"
+            android:textSize="13sp"
+            tools:text="Out 0 fps" />
+
+        <TextView
+            android:id="@+id/call_debug_extra"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:textColor="#9AA7B0"
+            android:textSize="12sp"
+            tools:text="RTT 0 ms · buffer 0\nEncoder 640×480 · H264 HW" />
+    </LinearLayout>
+
+    <View
+        android:id="@+id/call_debug_toggle"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:layout_gravity="top|end"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="8dp"
+        android:background="@null"
+        android:clickable="true"
+        android:contentDescription="@string/call_debug_toggle"
+        android:elevation="13dp"
+        android:focusable="true" />
 
     <LinearLayout
         android:id="@+id/call_audio_meters"

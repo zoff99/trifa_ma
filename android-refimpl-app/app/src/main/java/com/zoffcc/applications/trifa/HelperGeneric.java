@@ -1546,7 +1546,7 @@ public class HelperGeneric
                                 try
                                 {
                                     CallingActivity.ca.right_top_text_3.setText(
-                                            "IN   " + VIDEO_FRAME_RATE_INCOMING + " fps");
+                                            "In " + VIDEO_FRAME_RATE_INCOMING + " fps");
                                     CallingActivity.ca.right_top_text_4.setText(
                                             "Out " + VIDEO_FRAME_RATE_OUTGOING + " fps");
                                 }
@@ -1588,13 +1588,14 @@ public class HelperGeneric
                             try
                             {
                                 CallingActivity.ca.right_top_text_1.setText(
-                                        "O:" + Callstate.codec_to_str(Callstate.video_out_codec) + ":" +
-                                        Callstate.video_bitrate);
+                                        "Out " + Callstate.codec_to_str(Callstate.video_out_codec) + " · " +
+                                        Callstate.video_bitrate + " kbit/s");
                                 CallingActivity.ca.right_top_text_1b.setText(
-                                        "I:" + Callstate.codec_to_str(Callstate.video_in_codec) + ":" +
-                                        Callstate.video_in_bitrate);
+                                        "In " + Callstate.codec_to_str(Callstate.video_in_codec) + " · " +
+                                        Callstate.video_in_bitrate + " kbit/s");
                                 CallingActivity.ca.right_top_text_2.setText(
-                                        "AO:" + Callstate.audio_bitrate + " " + Callstate.play_delay);
+                                        "Audio " + Callstate.audio_bitrate + " kbit/s · delay " +
+                                        Callstate.play_delay + " ms");
                             }
                             catch (Exception e)
                             {
@@ -1603,9 +1604,14 @@ public class HelperGeneric
 
                             try
                             {
-                                CallingActivity.top_text_line.setText(
-                                        Callstate.friend_alias_name + " " + Callstate.round_trip_time + "/" +
-                                        Callstate.play_delay + "/" + Callstate.play_buffer_entries);
+                                if (CallingActivity.ca.call_debug_extra != null)
+                                {
+                                    String mode = MainActivity.PREF__use_H264_hw_encoding ? "H264 HW" : "H264 SW";
+                                    CallingActivity.ca.call_debug_extra.setText(
+                                            "RTT " + Callstate.round_trip_time + " ms · buffer " +
+                                            Callstate.play_buffer_entries + "\nEncoder " +
+                                            CallingActivity.get_video_encoder_size() + " · " + mode);
+                                }
                             }
                             catch (Exception e)
                             {

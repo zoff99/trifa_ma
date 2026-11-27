@@ -179,6 +179,8 @@ public class CallingActivity extends AppCompatActivity implements CameraWrapper.
     static TextView right_top_text_2 = null;
     static TextView right_top_text_3 = null;
     static TextView right_top_text_4 = null;
+    static TextView call_debug_extra = null;
+    static View call_debug_panel = null;
     static TextView right_left_text_1 = null;
     static TextView debug001_text = null;
     static View box_right_volumeslider_01 = null;
@@ -598,6 +600,23 @@ public class CallingActivity extends AppCompatActivity implements CameraWrapper.
         right_top_text_2 = (TextView) findViewById(R.id.right_top_text_2);
         right_top_text_3 = (TextView) findViewById(R.id.right_top_text_3);
         right_top_text_4 = (TextView) findViewById(R.id.right_top_text_4);
+        call_debug_extra = (TextView) findViewById(R.id.call_debug_extra);
+        call_debug_panel = findViewById(R.id.call_debug_panel);
+        call_debug_panel.setVisibility(View.GONE);
+        findViewById(R.id.call_debug_toggle).setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                boolean show = call_debug_panel.getVisibility() != View.VISIBLE;
+                call_debug_panel.setVisibility(show ? View.VISIBLE : View.GONE);
+                if (show)
+                {
+                    HelperGeneric.update_bitrates();
+                    HelperGeneric.update_fps();
+                }
+            }
+        });
         right_left_text_1 = (TextView) findViewById(R.id.right_left_text_1);
         quality_slider = (DiscreteSlider) findViewById(R.id.quality_slider);
         text_vq_low = (TextView) findViewById(R.id.text_vq_low);
@@ -1455,6 +1474,11 @@ public class CallingActivity extends AppCompatActivity implements CameraWrapper.
         {
             mute_button.setContentDescription(ca.getString(muted ? R.string.call_unmute : R.string.call_mute));
         }
+    }
+
+    static String get_video_encoder_size()
+    {
+        return video_encoder_width + "×" + video_encoder_height;
     }
 
     static void update_camera_button()
