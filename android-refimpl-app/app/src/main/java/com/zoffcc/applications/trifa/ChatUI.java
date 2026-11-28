@@ -348,8 +348,8 @@ final class ChatUI
             header.setOrientation(LinearLayout.HORIZONTAL);
             header.setGravity(android.view.Gravity.CENTER_VERTICAL);
             header.setPadding(0, 0, 0, dp(c, 3));
-            // Lock + "To" + peer name share the same rounded chip that
-            // regular group messages use for the peer name.
+            // Lock + "To" + peer name + short id share the same rounded
+            // chip that regular group messages use for the peer name.
             final LinearLayout chip = new LinearLayout(c);
             chip.setTag("pm_chip");
             chip.setOrientation(LinearLayout.HORIZONTAL);
@@ -389,7 +389,7 @@ final class ChatUI
             final LinearLayout.LayoutParams idLp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
                     ViewGroup.LayoutParams.WRAP_CONTENT);
             idLp.leftMargin = dp(c, 6);
-            header.addView(idView, idLp);
+            chip.addView(idView, idLp);
             bubble.addView(header, 0);
         }
         header.setVisibility(View.VISIBLE);
@@ -415,9 +415,9 @@ final class ChatUI
         final TextView nameView = (TextView) chip.findViewWithTag("pm_name");
         nameView.setText(name);
         nameView.setTextColor(peerColor);
-        final TextView idView = (TextView) header.findViewWithTag("pm_id");
+        final TextView idView = (TextView) chip.findViewWithTag("pm_id");
         idView.setText("\u00b7 " + shortId.toUpperCase(Locale.ROOT));
-        idView.setTextColor(meta);
+        idView.setTextColor(peerColor);
 
         if (bar == null)
         {
