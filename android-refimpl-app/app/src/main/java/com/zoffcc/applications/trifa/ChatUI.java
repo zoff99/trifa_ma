@@ -508,6 +508,14 @@ final class ChatUI
             ((LinearLayout) container).setGravity(outgoing ? android.view.Gravity.END : android.view.Gravity.START);
             ((LinearLayout) container).setOrientation(LinearLayout.HORIZONTAL);
         }
+        if (!text)
+        {
+            // Text rows get 2dp above/below from msg_swipe_surface. File rows
+            // lack that surface, so give outgoing files the same gap instead
+            // of letting them sit flush against the previous row.
+            final int vertical = outgoing ? dp(c, 2) : 0;
+            container.setPadding(container.getPaddingLeft(), vertical, container.getPaddingRight(), vertical);
+        }
         // File rows retain their original nested controls; their outer row supplies alignment.
         final View alignment = row.findViewById(R.id.layout2) != null ? row.findViewById(R.id.layout2) : row.findViewById(R.id.layout1);
         if (alignment instanceof LinearLayout)
