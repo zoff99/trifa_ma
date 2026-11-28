@@ -1,7 +1,7 @@
 
-## Conversation UI redesign
+## UI redesign
 
-This branch contains an original, open-source redesign of the friend/conference/group message-list UI. See `docs/ARCHITECTURE_ANALYSIS.md` and `docs/CHAT_UI_REDESIGN.md` for the architecture analysis, design decisions, asset provenance, and verification notes.
+This repo contains an original, open-source redesign of the friend/conference/group message-list UI.
 
 # Tox Reference Implementation for Android [TRIfA]
 
