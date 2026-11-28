@@ -499,7 +499,10 @@ final class ChatUI
                 LinearLayout.LayoutParams p = (LinearLayout.LayoutParams) bubble.getLayoutParams();
                 p.weight = 0;
                 p.width = ViewGroup.LayoutParams.WRAP_CONTENT;
-                p.setMargins(dp(c, outgoing ? 48 : 0), 0, dp(c, outgoing ? 0 : 48), 0);
+                // Text rows already have 8dp horizontal surface padding. File
+                // rows do not, so keep outgoing file bubbles off the right edge.
+                final int edge = (!text && outgoing) ? dp(c, 8) : 0;
+                p.setMargins(dp(c, outgoing ? 48 : 0), 0, dp(c, outgoing ? edge : 48), 0);
                 bubble.setLayoutParams(p);
             }
         }
