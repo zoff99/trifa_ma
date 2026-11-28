@@ -88,6 +88,13 @@ final class ChatUI
         return ContextCompat.getColor(c, night(c) ? R.color.chat_link_dark : R.color.chat_link);
     }
 
+    static int readColor(Context c)
+    {
+        // Keep read receipts on the theme-aware palette instead of reusing the
+        // day color on dark outgoing bubbles.
+        return ContextCompat.getColor(c, night(c) ? R.color.chat_read_dark : R.color.chat_read);
+    }
+
     static void setup(final AppCompatActivity a, final int kind, final SearchView search)
     {
         a.getSupportActionBar().setDisplayShowTitleEnabled(false);
@@ -589,7 +596,7 @@ final class ChatUI
                 else if (read)
                 {
                     icon.setImageResource(R.drawable.chat_ic_checks);
-                    icon.setColorFilter(color(row, R.color.chat_read));
+                    icon.setColorFilter(readColor(c));
                     label = R.string.chat_read;
                 }
                 else if (relay || push)
