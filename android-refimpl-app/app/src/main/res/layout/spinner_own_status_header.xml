@@ -1,18 +1,33 @@
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Closed status-spinner header: transparent so the modern toolbar
+     color shows through; no legacy colorPrimary block. -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
     android:layout_height="match_parent"
-    android:background="?attr/colorPrimary"
-    android:paddingBottom="0dp"
-    android:paddingLeft="0dp"
-    android:paddingTop="0dp">
+    android:background="@android:color/transparent"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:paddingStart="12dp"
+    android:paddingLeft="12dp"
+    android:paddingEnd="10dp"
+    android:paddingRight="10dp">
 
     <ImageView
         android:id="@+id/spinner_item_icon_02"
         android:layout_width="18dp"
         android:layout_height="18dp"
-        android:layout_gravity="center_vertical|left"
-        android:gravity="center_vertical|left"
-        android:src="@drawable/circle_green"/>
+        android:layout_gravity="center_vertical"
+        android:contentDescription="@string/chat_attachment_state"
+        android:src="@drawable/circle_green" />
+
+    <ImageView
+        android:layout_width="14dp"
+        android:layout_height="14dp"
+        android:layout_gravity="center_vertical"
+        android:layout_marginStart="5dp"
+        android:layout_marginLeft="5dp"
+        android:contentDescription="@string/chat_more_options"
+        android:src="@drawable/main_list_ic_spinner_caret"
+        android:tint="@color/main_list_on_header" />
 
 </LinearLayout>

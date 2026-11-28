@@ -25,7 +25,10 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_marginLeft="0dp"
-            android:paddingLeft="0dp" />
+            android:background="@android:color/transparent"
+            android:dropDownWidth="200dp"
+            android:paddingLeft="0dp"
+            android:popupBackground="@drawable/main_list_spinner_popup_bg" />
 
         <TextView
             android:layout_width="wrap_content"

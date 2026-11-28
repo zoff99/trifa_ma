@@ -1,37 +1,38 @@
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Open status-spinner dropdown row on the modern main-list surface. -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="?attr/colorPrimary"
+    android:layout_height="wrap_content"
+    android:background="@color/main_list_surface"
     android:gravity="center_vertical"
-    android:paddingBottom="10dp"
-    android:paddingLeft="0dp"
-    android:paddingTop="10dp">
+    android:orientation="horizontal"
+    android:paddingStart="16dp"
+    android:paddingLeft="16dp"
+    android:paddingTop="12dp"
+    android:paddingEnd="16dp"
+    android:paddingRight="16dp"
+    android:paddingBottom="12dp">
 
     <ImageView
         android:id="@+id/spinner_item_icon_01"
-        android:layout_width="45dp"
-        android:layout_height="match_parent"
-        android:gravity="center_vertical"
-        android:paddingBottom="5dp"
-        android:paddingLeft="0dp"
-        android:paddingRight="8dp"
-        android:paddingTop="5dp"
-        android:src="@drawable/circle_green"/>
+        android:layout_width="18dp"
+        android:layout_height="18dp"
+        android:layout_gravity="center_vertical"
+        android:contentDescription="@string/chat_attachment_state"
+        android:src="@drawable/circle_green" />
 
     <TextView
         android:id="@+id/spinner_item_text_01"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        android:layout_weight="100"
-        android:ellipsize="none"
+        android:layout_marginStart="12dp"
+        android:layout_marginLeft="12dp"
+        android:layout_weight="1"
+        android:ellipsize="end"
         android:gravity="center_vertical"
-        android:paddingBottom="0dp"
-        android:paddingLeft="0dp"
-        android:paddingRight="8dp"
+        android:maxLines="1"
         android:text="@string/layout___online"
-        android:textColor="@android:color/primary_text_dark"
-        android:textSize="22sp"
-        android:textStyle="bold"/>
+        android:textColor="@color/main_list_text"
+        android:textSize="16sp" />
 </LinearLayout>
