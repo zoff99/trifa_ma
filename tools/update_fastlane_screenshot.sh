@@ -1,14 +1,14 @@
 #! /bin/sh
-url_two_friend_list='https://github.com/zoff99/ToxAndroidRefImpl/releases/download/nightly/screen_shot_android_29_02.png'
-url_one_on_one_chat_with_image='https://github.com/zoff99/ToxAndroidRefImpl/releases/download/nightly/screen_shot_android_29_03.png'
-url_video_call_test='https://github.com/zoff99/ToxAndroidRefImpl/releases/download/nightly/screen_shot_android_29_11.png'
-url_start_screen='https://github.com/zoff99/ToxAndroidRefImpl/releases/download/nightly/android_screen01_33.png'
-url_friend_and_group_list='https://github.com/zoff99/ToxAndroidRefImpl/releases/download/nightly/screen_shot_android_29_04.png'
-url_info_screen='https://github.com/zoff99/ToxAndroidRefImpl/releases/download/nightly/screen_shot_info_29_03.png'
-url_profiler_screen='https://github.com/zoff99/ToxAndroidRefImpl/releases/download/nightly/screen_shot_netprof_29_03.png'
+url_two_friend_list='https://github.com/zoff99/trifa_ma/releases/download/nightly/screen_shot_android_29_02.png'
+url_one_on_one_chat_with_image='https://github.com/zoff99/trifa_ma/releases/download/nightly/screen_shot_android_29_03.png'
+url_video_call_test='https://github.com/zoff99/trifa_ma/releases/download/nightly/screen_shot_android_29_11.png'
+url_start_screen='https://github.com/zoff99/trifa_ma/releases/download/nightly/android_screen01_33.png'
+url_friend_and_group_list='https://github.com/zoff99/trifa_ma/releases/download/nightly/screen_shot_android_29_04.png'
+url_info_screen='https://github.com/zoff99/trifa_ma/releases/download/nightly/screen_shot_info_29_03.png'
+url_profiler_screen='https://github.com/zoff99/trifa_ma/releases/download/nightly/screen_shot_netprof_29_03.png'
 
-url_promo_friend_list='https://github.com/zoff99/ToxAndroidRefImpl/releases/download/nightly/promo_29_02.png'
-url_promo_chat_with_image='https://github.com/zoff99/ToxAndroidRefImpl/releases/download/nightly/promo_29_03.png'
+url_promo_friend_list='https://github.com/zoff99/trifa_ma/releases/download/nightly/promo_29_02.png'
+url_promo_chat_with_image='https://github.com/zoff99/trifa_ma/releases/download/nightly/promo_29_03.png'
 
 _HOME2_=$(dirname $0)
 export _HOME2_
