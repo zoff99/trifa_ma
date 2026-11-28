@@ -577,23 +577,20 @@ final class ChatUI
         }
         if (icon != null)
         {
-            if (!outgoing)
+            if (!text)
             {
-                if (text)
-                {
-                    // Do not replace NGC sync confirmation badges with fake delivery receipts.
-                    icon.setVisibility(synced ? View.VISIBLE : View.GONE);
-                    if (synced) icon.setContentDescription(c.getString(R.string.chat_sync_confirmations, confirmations));
-                }
-                else
-                {
-                    // Incoming file/image rows do not show the legacy colored state dot.
-                    // Transfer progress and actions remain in the file controls themselves.
-                    icon.setVisibility(View.GONE);
-                    icon.setContentDescription(null);
-                }
+                // File transfers show progress and actions, not message
+                // receipts. Hide sent/read checkmarks on file bubbles.
+                icon.setVisibility(View.GONE);
+                icon.setContentDescription(null);
             }
-            else if (text)
+            else if (!outgoing)
+            {
+                // Do not replace NGC sync confirmation badges with fake delivery receipts.
+                icon.setVisibility(synced ? View.VISIBLE : View.GONE);
+                if (synced) icon.setContentDescription(c.getString(R.string.chat_sync_confirmations, confirmations));
+            }
+            else
             {
                 icon.setVisibility(View.VISIBLE);
                 icon.clearColorFilter();
@@ -623,15 +620,6 @@ final class ChatUI
                     label = R.string.chat_pending;
                 }
                 icon.setContentDescription(c.getString(label));
-            }
-            else
-            {
-                // Outgoing files show a conservative sent marker; Tox file transfer state is
-                // already represented by the existing progress/action controls.
-                icon.setVisibility(View.VISIBLE);
-                icon.setImageResource(R.drawable.chat_ic_check);
-                icon.setColorFilter(metadataColor(c));
-                icon.setContentDescription(c.getString(R.string.chat_sent));
             }
         }
         final View header = row.findViewById(R.id.message_text_date);
