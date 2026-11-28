@@ -1,1 +1,1 @@
-TRIfA Tox Client
+Modern open-source Tox client with encrypted chats, groups and calls.

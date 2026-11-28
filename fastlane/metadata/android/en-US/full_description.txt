@@ -1,32 +1,30 @@
-<b>TRIfA - A New Kind of Instant Messaging</b><br>
+<b>TRIfAma - a modern Tox client for Android</b><br>
+<br>
+TRIfAma is a free, open-source Android client for Tox, the peer-to-peer encrypted messenger. It brings a refreshed chat experience to friends, conferences and groups while keeping the Tox protocol, encrypted local storage and existing call/file-transfer plumbing.<br><br>
 
-Whether it's corporations or governments, digital surveillance today is widespread.<br>
-Tox is easy-to-use software that connects you with friends and family without anyone else listening in.<br>
-While other big-name services require you to pay for features, Tox is completely free and comes without advertising — forever.<br><br>
+<b>Private by design:</b><br>
+Tox encrypts messages and calls end-to-end and does not require a central chat server. Your message database and received attachments are stored encrypted on the device.<br><br>
 
-<b>Encrypted:</b><br>
-Everything you do with Tox is encrypted using open-source libraries. The only people who can see your conversations are the people you're talking with.<br><br>
+<b>Modern chat UI:</b><br>
+* Clean conversation list and chat screens with light/dark themes<br>
+* Aligned message bubbles, inline time/status and a rounded composer<br>
+* Reply, search, selection, paging and swipe-to-quote preserved<br><br>
 
-<b>Distributed:</b><br>
-Tox has no central servers that can be raided, shut down, or forced to turn over data — the network is made up of its users. Say goodbye to server outages!<br><br>
+<b>Core features:</b><br>
+* One-to-one chats, legacy conferences and NGC groups<br>
+* Voice and video calls<br>
+* File transfers with encrypted local storage<br>
+* Optional push wake-ups via UnifiedPush-compatible distributors, ntfy.sh or sunup<br>
+* Optional persistent group peer list (experimental; see in-app privacy warning)<br><br>
 
-<b>Free:</b><br>
-Tox is free software. That's free as in freedom, as well as in price. This means Tox is yours — to use, modify, and share — because Tox is developed by and for the users.<br><br>
+<b>Push privacy note:</b><br>
+Push wake-ups can save battery and data, but push servers may see timing metadata. Enable only the push providers you trust.<br><br>
 
-<b>new Features:</b><br>
-<br>
-* Persistent Group Peer List: Your peers and friends are persistently saved and always available when you reconnect.
-<br>
-* Tox Profiler: Show extensive Debugging information of the Application.
-<br>
-* App Exit: See the reason why the App stopped last time (in the Maintenance screen).
+<b>Free and open source:</b><br>
+No ads. TRIfAma is free as in freedom and price, released under the project's GPL open-source license. UI artwork is original project vector/shape resources.<br><br>
 
-<br>
-<b>More Information:</b><br>
-* about Tox: https://tox.zoff.cc
-<br>
-* Join the TRIfA Tox Groupchat: https://trifagrp.tox.zoff.cc/
-<br>
-* Join discussion on Matrix: https://matrix.to/#/#trifa:matrix.org
-<br>
-Have a look at the desktop version: https://github.com/Zoxcore/trifa_material
+<b>More information:</b><br>
+* Source code: https://github.com/zoff99/trifa_ma<br>
+* About Tox: https://tox.zoff.cc<br>
+* TRIfA Tox group chat: https://trifagrp.tox.zoff.cc/<br>
+* Discussion on Matrix: https://matrix.to/#/#trifa:matrix.org<br>
