@@ -28,4 +28,10 @@ Startup Test Automated Screenshots
 
 <img src="https://github.com/zoff99/trifa_ma/releases/download/nightly/android_screen01_21.png" width="120">&nbsp;<img src="https://github.com/zoff99/trifa_ma/releases/download/nightly/android_screen01_29.png" width="120">&nbsp;<img src="https://github.com/zoff99/trifa_ma/releases/download/nightly/android_screen01_33.png" width="120">&nbsp;<img src="https://github.com/zoff99/trifa_ma/releases/download/nightly/android_screen01_35.png" width="120">
 
-
+Push Notifications
+=
+TRIfAma supports push wake-ups via ntfy.sh and the Tox ma Notify
+companion app. This lets the app sleep in battery saving mode and wake
+when a message arrives, while the Tox message content is still fetched
+over Tox. See [PUSH_NOTIFICATION.md](PUSH_NOTIFICATION.md) for setup
+and privacy notes.
