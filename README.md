@@ -35,3 +35,7 @@ companion app. This lets the app sleep in battery saving mode and wake
 when a message arrives, while the Tox message content is still fetched
 over Tox. See [PUSH_NOTIFICATION.md](PUSH_NOTIFICATION.md) for setup
 and privacy notes.
+
+Offline Messages
+=
+TODO: write me
