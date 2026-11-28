@@ -38,4 +38,7 @@ and privacy notes.
 
 Offline Messages
 =
-TODO: write me
+With ToxProxy, an always-on relay you run yourself, TRIfAma can
+receive messages sent while it is offline or asleep. ToxProxy buffers
+messages and can send push wake-ups. See
+[OFFLINE_MESSAGES.md](OFFLINE_MESSAGES.md) for setup and privacy notes.
