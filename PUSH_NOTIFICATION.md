@@ -72,7 +72,7 @@ Or open the download from TRIfAma:
 3. If Android asks, allow installation from this source.
 4. Install and open Tox ma Notify.
 
-Package name: `com.zoffcc.applications.pushmsg`.
+Package name: `com.zoffcc.applications.pushmsg2`.
 
 ## Step 3: Select ntfy and receive the push token
 
@@ -159,19 +159,3 @@ a message.
 - To change it: remove the old token, use the change-distributor button
   in Tox ma Notify, select ntfy again, and confirm the new token in
   TRIfAma.
-
-## Self-hosting ntfy (optional)
-
-For stronger control, self-host ntfy and configure access control. The
-public ntfy.sh server is convenient but has no accounts/authentication
-by default.
-
-- ntfy install guide: <https://ntfy.sh/docs/install/>
-- UnifiedPush ntfy distributor notes:
-  <https://unifiedpush.org/users/distributors/ntfy/>
-
-## Image provenance and license
-
-All images in `images/push_ntfy/` are original setup illustrations
-created for this guide. They are not screenshots. They are released
-under the same open-source license terms as the project (GPL).
