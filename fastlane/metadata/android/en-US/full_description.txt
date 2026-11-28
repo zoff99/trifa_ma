@@ -1,9 +1,14 @@
 <b>TRIfAma - a modern Tox client for Android</b><br>
 <br>
-TRIfAma is a free, open-source Android client for Tox, the peer-to-peer encrypted messenger. It brings a refreshed chat experience to friends, conferences and groups while keeping the Tox protocol, encrypted local storage and existing call/file-transfer plumbing.<br><br>
+TRIfAma is a free, open-source Android client for Tox, the peer-to-peer
+encrypted messenger. It brings a refreshed chat experience to friends,
+conferences and groups while keeping the Tox protocol, encrypted local
+storage and existing call/file-transfer plumbing.<br><br>
 
 <b>Private by design:</b><br>
-Tox encrypts messages and calls end-to-end and does not require a central chat server. Your message database and received attachments are stored encrypted on the device.<br><br>
+Tox encrypts messages and calls end-to-end and does not require a
+central chat server. Your message database and received attachments are
+stored encrypted on the device.<br><br>
 
 <b>Modern chat UI:</b><br>
 * Clean conversation list and chat screens with light/dark themes<br>
@@ -14,14 +19,19 @@ Tox encrypts messages and calls end-to-end and does not require a central chat s
 * One-to-one chats, legacy conferences and NGC groups<br>
 * Voice and video calls<br>
 * File transfers with encrypted local storage<br>
-* Optional push wake-ups via UnifiedPush-compatible distributors, ntfy.sh or sunup<br>
-* Optional persistent group peer list (experimental; see in-app privacy warning)<br><br>
+* Optional push wake-ups via UnifiedPush-compatible distributors, ntfy.sh or
+  sunup<br>
+* Optional persistent group peer list (experimental; see in-app privacy
+  warning)<br><br>
 
 <b>Push privacy note:</b><br>
-Push wake-ups can save battery and data, but push servers may see timing metadata. Enable only the push providers you trust.<br><br>
+Push wake-ups can save battery and data, but push servers may see timing
+metadata. Enable only the push providers you trust.<br><br>
 
 <b>Free and open source:</b><br>
-No ads. TRIfAma is free as in freedom and price, released under the project's GPL open-source license. UI artwork is original project vector/shape resources.<br><br>
+No ads. TRIfAma is free as in freedom and price, released under the
+project's GPL open-source license. UI artwork is original project
+vector/shape resources.<br><br>
 
 <b>More information:</b><br>
 * Source code: https://github.com/zoff99/trifa_ma<br>
