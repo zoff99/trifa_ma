@@ -28,6 +28,13 @@
     <color name="chat_composer_dark">#172725</color>
     <color name="chat_input">#FBFAF7</color>
     <color name="chat_input_dark">#243A34</color>
+    <!-- Ongoing file-transfer bubble accents (day palette). -->
+    <color name="chat_ft_tile">#E7EFEA</color>
+    <color name="chat_ft_icon">#168574</color>
+    <color name="chat_ft_cancel">#C62828</color>
+    <color name="chat_ft_cancel_bg">#14000000</color>
+    <color name="chat_ft_track">#1A000000</color>
+    <color name="chat_ft_fill">#168574</color>
     <dimen name="chat_bubble_radius">14dp</dimen>
     <dimen name="chat_action_size">44dp</dimen>
     <string name="chat_input_hint">Message</string>
@@ -57,6 +64,10 @@
     <string name="chat_send">Send message</string>
     <string name="chat_record">Record audio message</string>
     <string name="chat_attachment_state">File transfer state</string>
+    <string name="chat_ft_sending">Sending\u2026</string>
+    <string name="chat_ft_receiving">Receiving\u2026</string>
+    <string name="chat_ft_cancel_transfer">Cancel file transfer</string>
+    <string name="chat_ft_preview">File preview</string>
     <string name="chat_quote_hint">Replying to message</string>
     <string name="chat_audio_permission_needed">Microphone permission is needed to record audio messages</string>
     <string name="chat_audio_temp_dir_failed">Could not create the audio recording folder</string>

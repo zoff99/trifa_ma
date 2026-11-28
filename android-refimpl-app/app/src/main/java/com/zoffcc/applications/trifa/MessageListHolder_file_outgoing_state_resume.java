@@ -22,33 +22,25 @@ package com.zoffcc.applications.trifa;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.Priority;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
-import com.luseen.autolinklibrary.AutoLinkMode;
-import com.luseen.autolinklibrary.EmojiTextViewLinks;
-import com.mikepenz.fontawesome_typeface_library.FontAwesome;
-import com.mikepenz.google_material_typeface_library.GoogleMaterial;
-import com.mikepenz.iconics.IconicsDrawable;
 import com.zoffcc.applications.sorm.Filetransfer;
 import com.zoffcc.applications.sorm.Message;
 
 import java.net.URLConnection;
 
 import androidx.appcompat.app.AlertDialog;
-import androidx.core.content.ContextCompat;
 import androidx.documentfile.provider.DocumentFile;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -58,14 +50,11 @@ import static com.zoffcc.applications.trifa.HelperFiletransfer.remove_ft_from_ca
 import static com.zoffcc.applications.trifa.HelperFiletransfer.set_filetransfer_state_from_id;
 import static com.zoffcc.applications.trifa.HelperFriend.tox_friend_by_public_key__wrapper;
 import static com.zoffcc.applications.trifa.HelperGeneric.dp2px;
-import static com.zoffcc.applications.trifa.HelperGeneric.get_vfs_image_filename_own_avatar;
 import static com.zoffcc.applications.trifa.HelperGeneric.long_date_time_format;
 import static com.zoffcc.applications.trifa.HelperMessage.set_message_state_from_id;
 import static com.zoffcc.applications.trifa.HelperMessage.update_single_message_from_messge_id;
-import static com.zoffcc.applications.trifa.MainActivity.VFS_ENCRYPT;
 import static com.zoffcc.applications.trifa.MainActivity.tox_file_control;
 import static com.zoffcc.applications.trifa.ToxVars.TOX_FILE_CONTROL.TOX_FILE_CONTROL_CANCEL;
-import static com.zoffcc.applications.trifa.ToxVars.TOX_FILE_KIND.TOX_FILE_KIND_FTV2;
 import static com.zoffcc.applications.trifa.TrifaToxService.orma;
 
 public class MessageListHolder_file_outgoing_state_resume extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener
@@ -74,47 +63,37 @@ public class MessageListHolder_file_outgoing_state_resume extends RecyclerView.V
 
     private Context context;
 
-    ImageButton button_ok;
     ImageButton button_cancel;
-    com.daimajia.numberprogressbar.NumberProgressBar ft_progressbar;
-    ViewGroup ft_preview_container;
-    ViewGroup ft_buttons_container;
+    ProgressBar ft_progressbar;
     ImageButton ft_preview_image;
-    EmojiTextViewLinks textView;
-    ImageView imageView;
-    de.hdodenhof.circleimageview.CircleImageView img_avatar;
+    ImageView ft_file_icon;
+    TextView textView;
+    TextView ft_file_meta;
+    TextView ft_percent;
+    TextView ft_status;
     TextView date_time;
-    TextView message_text_date_string;
-    ViewGroup message_text_date;
-    ViewGroup rounded_bg_container;
+    de.hdodenhof.circleimageview.CircleImageView img_avatar;
 
     public MessageListHolder_file_outgoing_state_resume(View itemView, Context c)
     {
         super(itemView);
 
-        // Log.i(TAG, "MessageListHolder");
-
         this.context = c;
 
-        button_ok = (ImageButton) itemView.findViewById(R.id.ft_button_ok);
         button_cancel = (ImageButton) itemView.findViewById(R.id.ft_button_cancel);
-        ft_progressbar = (com.daimajia.numberprogressbar.NumberProgressBar) itemView.findViewById(R.id.ft_progressbar);
-        ft_preview_container = (ViewGroup) itemView.findViewById(R.id.ft_preview_container);
-        ft_buttons_container = (ViewGroup) itemView.findViewById(R.id.ft_buttons_container);
+        ft_progressbar = (ProgressBar) itemView.findViewById(R.id.ft_progressbar);
         ft_preview_image = (ImageButton) itemView.findViewById(R.id.ft_preview_image);
-        rounded_bg_container = (ViewGroup) itemView.findViewById(R.id.ft_outgoing_rounded_bg);
-        textView = (EmojiTextViewLinks) itemView.findViewById(R.id.m_text);
-        imageView = (ImageView) itemView.findViewById(R.id.m_icon);
-        img_avatar = (de.hdodenhof.circleimageview.CircleImageView) itemView.findViewById(R.id.img_avatar);
+        ft_file_icon = (ImageView) itemView.findViewById(R.id.ft_file_icon);
+        textView = (TextView) itemView.findViewById(R.id.m_text);
+        ft_file_meta = (TextView) itemView.findViewById(R.id.ft_file_meta);
+        ft_percent = (TextView) itemView.findViewById(R.id.ft_percent);
+        ft_status = (TextView) itemView.findViewById(R.id.ft_status);
         date_time = (TextView) itemView.findViewById(R.id.date_time);
-        message_text_date_string = (TextView) itemView.findViewById(R.id.message_text_date_string);
-        message_text_date = (ViewGroup) itemView.findViewById(R.id.message_text_date);
+        img_avatar = (de.hdodenhof.circleimageview.CircleImageView) itemView.findViewById(R.id.img_avatar);
     }
 
     public void bindMessageList(Message m)
     {
-        // Log.i(TAG, "bindMessageList");
-
         if (m == null)
         {
             // TODO: should never be null!!
@@ -122,151 +101,29 @@ public class MessageListHolder_file_outgoing_state_resume extends RecyclerView.V
             m = new Message();
         }
 
-        date_time.setText(long_date_time_format(m.sent_timestamp));
-
         final Message message = m;
 
-        int drawable_id = R.drawable.rounded_blue_bg_with_border;
+        date_time.setText(long_date_time_format(message.sent_timestamp));
+
+        // --------- file name and type ---------
+        String filename = "" + message.text;
+        String mimeType = null;
         try
         {
-            if (m.filetransfer_kind == TOX_FILE_KIND_FTV2.value)
-            {
-                drawable_id = R.drawable.rounded_blue_bg;
-            }
-
-            final int sdk = android.os.Build.VERSION.SDK_INT;
-            if (sdk < android.os.Build.VERSION_CODES.JELLY_BEAN)
-            {
-                rounded_bg_container.setBackgroundDrawable(ContextCompat.getDrawable(context, drawable_id));
-            }
-            else
-            {
-                rounded_bg_container.setBackground(ContextCompat.getDrawable(context, drawable_id));
-            }
-        }
-        catch (Exception e)
-        {
-            final int sdk = android.os.Build.VERSION.SDK_INT;
-            if (sdk < android.os.Build.VERSION_CODES.JELLY_BEAN)
-            {
-                rounded_bg_container.setBackgroundDrawable(ContextCompat.getDrawable(context, drawable_id));
-            }
-            else
-            {
-                rounded_bg_container.setBackground(ContextCompat.getDrawable(context, drawable_id));
-            }
-        }
-
-        // --------- message date header (show only if different from previous message) ---------
-        // --------- message date header (show only if different from previous message) ---------
-        // --------- message date header (show only if different from previous message) ---------
-        message_text_date.setVisibility(View.GONE);
-        int my_position = this.getAdapterPosition();
-        if (my_position != RecyclerView.NO_POSITION)
-        {
-            if (MainActivity.message_list_fragment != null)
-            {
-                if (MainActivity.message_list_fragment.adapter != null)
-                {
-                    if (my_position < 1)
-                    {
-                        message_text_date_string.setText(
-                                MainActivity.message_list_fragment.adapter.getDateHeaderText(my_position));
-                        message_text_date.setVisibility(View.VISIBLE);
-                    }
-                    else
-                    {
-                        if (!MainActivity.message_list_fragment.adapter.getDateHeaderText(my_position).equals(
-                                MainActivity.message_list_fragment.adapter.getDateHeaderText(my_position - 1)))
-                        {
-                            message_text_date_string.setText(
-                                    MainActivity.message_list_fragment.adapter.getDateHeaderText(my_position));
-                            message_text_date.setVisibility(View.VISIBLE);
-                        }
-                    }
-                }
-            }
-        }
-        // --------- message date header (show only if different from previous message) ---------
-        // --------- message date header (show only if different from previous message) ---------
-        // --------- message date header (show only if different from previous message) ---------
-
-
-        textView.addAutoLinkMode(AutoLinkMode.MODE_URL, AutoLinkMode.MODE_EMAIL, AutoLinkMode.MODE_HASHTAG,
-                                 AutoLinkMode.MODE_MENTION);
-
-
-        // TODO:
-        long ft_id = message.filetransfer_id;
-        // Log.i(TAG, "getView:033:STATE:RESUME:ft_id=" + ft_id);
-        if (ft_id != -1)
-        {
-            final Filetransfer ft_ = (Filetransfer) orma.selectFromFiletransfer().idEq(ft_id).get(0);
-            final int percent = (int) (100f * (float) ft_.current_position / (float) ft_.filesize);
-            // Log.i(TAG, "getView:033:STATE:RESUME:percent=" + percent + " cur=" + ft_.current_position + " size=" + ft_.filesize);
-            ft_progressbar.setProgress(percent);
-            long start_ts = ft_.transfer_start_ts;
-            long now = System.currentTimeMillis();
-            long delta_ts_ms = now - start_ts;
-            if (delta_ts_ms < 1)
-            {
-                delta_ts_ms = 1;
-            }
-            float speed_bytes_per_second = (((float)ft_.current_position) / (float)delta_ts_ms) * 1000.0f;
-            // TODO: make text better
-            textView.setAutoLinkText(
-                    "" + message.text + "\n" + ft_.current_position + "/" + ft_.filesize + "\n sending ..." +
-                    "\n" + format_speed(speed_bytes_per_second));
-        }
-        else
-        {
-            ft_progressbar.setProgress(0);
-            // TODO: make text better
-            textView.setAutoLinkText("" + message.text + "\n sending ...");
-        }
-
-        ft_progressbar.setVisibility(View.VISIBLE);
-        ft_progressbar.setMax(100);
-        // ft_progressbar.setIndeterminate(false);
-
-
-        ft_buttons_container.setVisibility(View.VISIBLE);
-        ft_preview_container.setVisibility(View.VISIBLE);
-        ft_preview_image.setVisibility(View.VISIBLE);
-
-        final Message message2 = message;
-
-        final Drawable d2 = new IconicsDrawable(context).
-                icon(GoogleMaterial.Icon.gmd_highlight_off).
-                backgroundColor(Color.TRANSPARENT).
-                color(Color.parseColor("#A0FF0000")).sizeDp(50);
-        button_cancel.setImageDrawable(d2);
-        ft_buttons_container.setVisibility(View.VISIBLE);
-
-        button_ok.setVisibility(View.GONE);
-        button_cancel.setVisibility(View.VISIBLE);
-
-        HelperGeneric.fill_own_avatar_icon(context, img_avatar);
-
-        boolean is_image = false;
-        try
-        {
-            String mimeType = null;
             if (message.storage_frame_work)
             {
                 Uri uri = Uri.parse(message.filename_fullpath);
                 DocumentFile documentFile = DocumentFile.fromSingleUri(context, uri);
                 String fileName = documentFile.getName();
-                mimeType = URLConnection.guessContentTypeFromName(fileName.toLowerCase());
+                if (fileName != null && fileName.length() > 0)
+                {
+                    filename = fileName;
+                }
+                mimeType = URLConnection.guessContentTypeFromName(filename.toLowerCase());
             }
             else
             {
                 mimeType = URLConnection.guessContentTypeFromName(message.filename_fullpath.toLowerCase());
-            }
-
-            if (mimeType.startsWith("image/"))
-            {
-                is_image = true;
             }
         }
         catch (Exception e)
@@ -274,6 +131,107 @@ public class MessageListHolder_file_outgoing_state_resume extends RecyclerView.V
             e.printStackTrace();
         }
 
+        textView.setText(filename);
+        ft_file_icon.setImageResource(ChatUI.ftTypeIcon(mimeType, filename));
+
+        final boolean is_image = mimeType != null && mimeType.startsWith("image/");
+
+        // --------- progress, percent, speed ---------
+        long filesize = 0;
+        int percent = 0;
+        String status = context.getString(R.string.chat_ft_sending);
+        long ft_id = message.filetransfer_id;
+        if (ft_id != -1)
+        {
+            try
+            {
+                final Filetransfer ft_ = (Filetransfer) orma.selectFromFiletransfer().idEq(ft_id).get(0);
+                filesize = ft_.filesize;
+                if (filesize > 0)
+                {
+                    percent = (int) (100f * (float) ft_.current_position / (float) filesize);
+                }
+                percent = Math.max(0, Math.min(100, percent));
+                long delta_ts_ms = System.currentTimeMillis() - ft_.transfer_start_ts;
+                if (delta_ts_ms < 1)
+                {
+                    delta_ts_ms = 1;
+                }
+                float speed_bytes_per_second = (((float) ft_.current_position) / (float) delta_ts_ms) * 1000.0f;
+                status = status + " " + format_speed(speed_bytes_per_second);
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+        }
+
+        ft_progressbar.setMax(100);
+        ft_progressbar.setProgress(percent);
+        ft_percent.setText(percent + "%");
+        ft_file_meta.setText(ChatUI.ftTypeLabel(mimeType, filename) + " \u2022 " + ChatUI.ftSize(filesize));
+        ft_status.setText(status);
+
+        button_cancel.setVisibility(View.VISIBLE);
+
+        // --------- image thumbnail in the small icon tile ---------
+        if (is_image)
+        {
+            ft_preview_image.setVisibility(View.VISIBLE);
+            ft_preview_image.setOnTouchListener(new View.OnTouchListener()
+            {
+                @Override
+                public boolean onTouch(View v, MotionEvent event)
+                {
+                    if (event.getAction() == MotionEvent.ACTION_UP)
+                    {
+                        try
+                        {
+                            Intent intent = new Intent(v.getContext(), ImageviewerActivity.class);
+                            intent.putExtra("image_filename", message.storage_frame_work ?
+                                    Uri.parse(message.filename_fullpath).toString() : message.filename_fullpath);
+                            intent.putExtra("friend_pubkey", message.tox_friendpubkey);
+                            if (message.storage_frame_work)
+                            {
+                                intent.putExtra("storage_frame_work", "1");
+                            }
+                            v.getContext().startActivity(intent);
+                        }
+                        catch (Exception e)
+                        {
+                            e.printStackTrace();
+                            Log.i(TAG, "open_attachment_intent:EE:" + e.getMessage());
+                        }
+                    }
+                    return true;
+                }
+            });
+
+            try
+            {
+                final RequestOptions glide_options = new RequestOptions().centerCrop().optionalTransform(
+                        new RoundedCorners((int) dp2px(12)));
+
+                GlideApp.
+                        with(context).
+                        load(message.storage_frame_work ? Uri.parse(message.filename_fullpath) :
+                                new java.io.File(message.filename_fullpath)).
+                        apply(glide_options).
+                        diskCacheStrategy(DiskCacheStrategy.RESOURCE).
+                        skipMemoryCache(false).
+                        priority(Priority.LOW).
+                        into(ft_preview_image);
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+        }
+        else
+        {
+            ft_preview_image.setVisibility(View.GONE);
+            ft_preview_image.setOnTouchListener(null);
+        }
 
         button_cancel.setOnTouchListener(new View.OnTouchListener()
         {
@@ -302,122 +260,11 @@ public class MessageListHolder_file_outgoing_state_resume extends RecyclerView.V
                     AlertDialog dialog = builder.create();
                     dialog.show();
                 }
-                else
-                {
-                }
                 return true;
             }
         });
 
-
-        if (is_image)
-        {
-            ft_preview_image.setImageResource(R.drawable.round_loading_animation);
-
-            ft_preview_image.setOnTouchListener(new View.OnTouchListener()
-            {
-                @Override
-                public boolean onTouch(View v, MotionEvent event)
-                {
-                    if (event.getAction() == MotionEvent.ACTION_UP)
-                    {
-                        try
-                        {
-                            if (message.storage_frame_work)
-                            {
-                                Uri uri = Uri.parse(message.filename_fullpath);
-                                DocumentFile documentFile = DocumentFile.fromSingleUri(context, uri);
-                                String fileName = documentFile.getName();
-
-                                Intent intent = new Intent(v.getContext(), ImageviewerActivity.class);
-                                intent.putExtra("image_filename", uri.toString());
-                                intent.putExtra("friend_pubkey", message.tox_friendpubkey);
-                                intent.putExtra("storage_frame_work", "1");
-                                v.getContext().startActivity(intent);
-                            }
-                            else
-                            {
-                                Intent intent = new Intent(v.getContext(), ImageviewerActivity.class);
-                                intent.putExtra("image_filename", message.filename_fullpath);
-                                intent.putExtra("friend_pubkey", message.tox_friendpubkey);
-                                v.getContext().startActivity(intent);
-                            }
-                        }
-                        catch (Exception e)
-                        {
-                            e.printStackTrace();
-                            Log.i(TAG, "open_attachment_intent:EE:" + e.getMessage());
-                        }
-                    }
-                    else
-                    {
-                    }
-                    return true;
-                }
-            });
-
-            if (message.storage_frame_work)
-            {
-                try
-                {
-                    @SuppressWarnings("unused") final RequestOptions glide_options = new RequestOptions().fitCenter().optionalTransform(
-                            new RoundedCorners((int) dp2px(20)));
-
-                    GlideApp.
-                            with(context).
-                            load(Uri.parse(message.filename_fullpath)).
-                            diskCacheStrategy(DiskCacheStrategy.RESOURCE).
-                            skipMemoryCache(false).
-                            priority(Priority.LOW).
-                            placeholder(R.drawable.round_loading_animation).
-                            into(ft_preview_image);
-                }
-                catch (Exception e)
-                {
-                    e.printStackTrace();
-                }
-            }
-            else
-            {
-                java.io.File f2 = new java.io.File(message2.filename_fullpath);
-                try
-                {
-                    @SuppressWarnings("unused") final RequestOptions glide_options = new RequestOptions().fitCenter().optionalTransform(
-                            new RoundedCorners((int) dp2px(20)));
-
-                    GlideApp.
-                            with(context).
-                            load(f2).
-                            diskCacheStrategy(DiskCacheStrategy.RESOURCE).
-                            skipMemoryCache(false).
-                            priority(Priority.LOW).
-                            placeholder(R.drawable.round_loading_animation).
-                            into(ft_preview_image);
-                }
-                catch (Exception e)
-                {
-                    e.printStackTrace();
-                }
-            }
-        }
-        else
-        {
-            final Drawable d3 = new IconicsDrawable(this.context).
-                    icon(GoogleMaterial.Icon.gmd_attachment).
-                    backgroundColor(Color.TRANSPARENT).
-                    color(Color.parseColor("#AA000000")).sizeDp(50);
-
-            // ft_preview_image.setImageDrawable(d3);
-            GlideApp.
-                    with(context).
-                    load(d3).
-                    diskCacheStrategy(DiskCacheStrategy.NONE).
-                    skipMemoryCache(false).
-                    priority(Priority.LOW).
-                    placeholder(R.drawable.round_loading_animation).
-                    into(ft_preview_image);
-        }
-
+        HelperGeneric.fill_own_avatar_icon(context, img_avatar);
         HelperGeneric.set_avatar_img_height_in_chat(img_avatar);
     }
 
@@ -436,7 +283,6 @@ public class MessageListHolder_file_outgoing_state_resume extends RecyclerView.V
             // TODO: cleanup duplicated outgoing files from provider here ************
             remove_ft_from_cache(message);
 
-            button_ok.setVisibility(View.GONE);
             button_cancel.setVisibility(View.GONE);
             ft_progressbar.setVisibility(View.GONE);
 
@@ -452,36 +298,12 @@ public class MessageListHolder_file_outgoing_state_resume extends RecyclerView.V
     public void onClick(View v)
     {
         Log.i(TAG, "onClick");
-        try
-        {
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-            Log.i(TAG, "onClick:EE:" + e.getMessage());
-        }
     }
 
     @Override
     public boolean onLongClick(final View v)
     {
         Log.i(TAG, "onLongClick");
-
-        // final Message m2 = this.message;
-
-        //        PopupMenu menu = new PopupMenu(v.getContext(), v);
-        //        menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener()
-        //        {
-        //            @Override
-        //            public boolean onMenuItemClick(MenuItem item)
-        //            {
-        //                int id = item.getItemId();
-        //                return true;
-        //            }
-        //        });
-        //        menu.inflate(R.menu.menu_friendlist_item);
-        //        menu.show();
-
         return true;
     }
 }

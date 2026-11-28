@@ -21,23 +21,20 @@ package com.zoffcc.applications.trifa;
 
 import android.content.Context;
 import android.content.DialogInterface;
-import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.mikepenz.google_material_typeface_library.GoogleMaterial;
-import com.mikepenz.iconics.IconicsDrawable;
 import com.zoffcc.applications.sorm.Filetransfer;
 import com.zoffcc.applications.sorm.Message;
 
+import java.net.URLConnection;
+
 import androidx.appcompat.app.AlertDialog;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import static com.zoffcc.applications.trifa.HelperFiletransfer.format_speed;
@@ -48,12 +45,8 @@ import static com.zoffcc.applications.trifa.HelperFriend.tox_friend_by_public_ke
 import static com.zoffcc.applications.trifa.HelperGeneric.long_date_time_format;
 import static com.zoffcc.applications.trifa.HelperMessage.set_message_state_from_id;
 import static com.zoffcc.applications.trifa.HelperMessage.update_single_message_from_messge_id;
-import static com.zoffcc.applications.trifa.MainActivity.PREF__global_font_size;
 import static com.zoffcc.applications.trifa.MainActivity.tox_file_control;
-import static com.zoffcc.applications.trifa.TRIFAGlobals.MESSAGE_TEXT_SIZE;
-import static com.zoffcc.applications.trifa.TRIFAGlobals.MESSAGE_TEXT_SIZE_FT_SMALL;
 import static com.zoffcc.applications.trifa.ToxVars.TOX_FILE_CONTROL.TOX_FILE_CONTROL_CANCEL;
-import static com.zoffcc.applications.trifa.ToxVars.TOX_FILE_KIND.TOX_FILE_KIND_FTV2;
 import static com.zoffcc.applications.trifa.TrifaToxService.orma;
 
 public class MessageListHolder_file_incoming_state_resume extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener
@@ -62,45 +55,35 @@ public class MessageListHolder_file_incoming_state_resume extends RecyclerView.V
 
     private Context context;
 
-    ImageButton button_ok;
     ImageButton button_cancel;
-    com.daimajia.numberprogressbar.NumberProgressBar ft_progressbar;
-    ViewGroup ft_preview_container;
-    ViewGroup ft_buttons_container;
-    ImageButton ft_preview_image;
+    ProgressBar ft_progressbar;
+    ImageView ft_file_icon;
     TextView textView;
-    de.hdodenhof.circleimageview.CircleImageView img_avatar;
+    TextView ft_file_meta;
+    TextView ft_percent;
+    TextView ft_status;
     TextView date_time;
-    TextView message_text_date_string;
-    ViewGroup message_text_date;
-    ViewGroup rounded_bg_container;
+    de.hdodenhof.circleimageview.CircleImageView img_avatar;
 
     public MessageListHolder_file_incoming_state_resume(View itemView, Context c)
     {
         super(itemView);
 
-        // Log.i(TAG, "MessageListHolder");
-
         this.context = c;
 
-        button_ok = (ImageButton) itemView.findViewById(R.id.ft_button_ok);
         button_cancel = (ImageButton) itemView.findViewById(R.id.ft_button_cancel);
-        ft_progressbar = (com.daimajia.numberprogressbar.NumberProgressBar) itemView.findViewById(R.id.ft_progressbar);
-        ft_preview_container = (ViewGroup) itemView.findViewById(R.id.ft_preview_container);
-        ft_buttons_container = (ViewGroup) itemView.findViewById(R.id.ft_buttons_container);
-        ft_preview_image = (ImageButton) itemView.findViewById(R.id.ft_preview_image);
-        rounded_bg_container = (ViewGroup) itemView.findViewById(R.id.ft_incoming_rounded_bg);
+        ft_progressbar = (ProgressBar) itemView.findViewById(R.id.ft_progressbar);
+        ft_file_icon = (ImageView) itemView.findViewById(R.id.ft_file_icon);
         textView = (TextView) itemView.findViewById(R.id.m_text);
-        img_avatar = (de.hdodenhof.circleimageview.CircleImageView) itemView.findViewById(R.id.img_avatar);
+        ft_file_meta = (TextView) itemView.findViewById(R.id.ft_file_meta);
+        ft_percent = (TextView) itemView.findViewById(R.id.ft_percent);
+        ft_status = (TextView) itemView.findViewById(R.id.ft_status);
         date_time = (TextView) itemView.findViewById(R.id.date_time);
-        message_text_date_string = (TextView) itemView.findViewById(R.id.message_text_date_string);
-        message_text_date = (ViewGroup) itemView.findViewById(R.id.message_text_date);
+        img_avatar = (de.hdodenhof.circleimageview.CircleImageView) itemView.findViewById(R.id.img_avatar);
     }
 
     public void bindMessageList(Message m)
     {
-        // Log.i(TAG, "bindMessageList");
-
         if (m == null)
         {
             // TODO: should never be null!!
@@ -108,137 +91,64 @@ public class MessageListHolder_file_incoming_state_resume extends RecyclerView.V
             m = new Message();
         }
 
-        date_time.setText(long_date_time_format(m.rcvd_timestamp));
-
-        try
-        {
-            ft_preview_container.setVisibility(View.GONE);
-        }
-        catch (Exception e)
-        {
-        }
-
         final Message message = m;
 
-        int drawable_id = R.drawable.rounded_orange_bg_with_border;
+        date_time.setText(long_date_time_format(message.rcvd_timestamp));
+
+        // --------- file name and type ---------
+        // The file is still arriving, so there is no local thumbnail yet:
+        // always show the original line-art placeholder icon tile.
+        final String filename = "" + message.text;
+        String mimeType = null;
         try
         {
-            if (m.filetransfer_kind == TOX_FILE_KIND_FTV2.value)
-            {
-                drawable_id = R.drawable.rounded_orange_bg;
-            }
-
-            final int sdk = android.os.Build.VERSION.SDK_INT;
-            if (sdk < android.os.Build.VERSION_CODES.JELLY_BEAN)
-            {
-                rounded_bg_container.setBackgroundDrawable(ContextCompat.getDrawable(context, drawable_id));
-            }
-            else
-            {
-                rounded_bg_container.setBackground(ContextCompat.getDrawable(context, drawable_id));
-            }
+            mimeType = URLConnection.guessContentTypeFromName(filename.toLowerCase());
         }
         catch (Exception e)
         {
-            final int sdk = android.os.Build.VERSION.SDK_INT;
-            if (sdk < android.os.Build.VERSION_CODES.JELLY_BEAN)
-            {
-                rounded_bg_container.setBackgroundDrawable(ContextCompat.getDrawable(context, drawable_id));
-            }
-            else
-            {
-                rounded_bg_container.setBackground(ContextCompat.getDrawable(context, drawable_id));
-            }
+            e.printStackTrace();
         }
 
-        // --------- message date header (show only if different from previous message) ---------
-        // --------- message date header (show only if different from previous message) ---------
-        // --------- message date header (show only if different from previous message) ---------
-        message_text_date.setVisibility(View.GONE);
-        int my_position = this.getAdapterPosition();
-        if (my_position != RecyclerView.NO_POSITION)
-        {
-            if (MainActivity.message_list_fragment != null)
-            {
-                if (MainActivity.message_list_fragment.adapter != null)
-                {
-                    if (my_position < 1)
-                    {
-                        message_text_date_string.setText(
-                                MainActivity.message_list_fragment.adapter.getDateHeaderText(my_position));
-                        message_text_date.setVisibility(View.VISIBLE);
-                    }
-                    else
-                    {
-                        if (!MainActivity.message_list_fragment.adapter.getDateHeaderText(my_position).equals(
-                                MainActivity.message_list_fragment.adapter.getDateHeaderText(my_position - 1)))
-                        {
-                            message_text_date_string.setText(
-                                    MainActivity.message_list_fragment.adapter.getDateHeaderText(my_position));
-                            message_text_date.setVisibility(View.VISIBLE);
-                        }
-                    }
-                }
-            }
-        }
-        // --------- message date header (show only if different from previous message) ---------
-        // --------- message date header (show only if different from previous message) ---------
-        // --------- message date header (show only if different from previous message) ---------
+        textView.setText(filename);
+        ft_file_icon.setImageResource(ChatUI.ftTypeIcon(mimeType, filename));
 
-
-        final Drawable d1 = new IconicsDrawable(context).
-                icon(GoogleMaterial.Icon.gmd_check_circle).
-                backgroundColor(Color.TRANSPARENT).
-                color(Color.parseColor("#EF088A29")).sizeDp(50);
-        button_ok.setImageDrawable(d1);
-        button_ok.setVisibility(View.GONE);
-        final Drawable d2 = new IconicsDrawable(context).
-                icon(GoogleMaterial.Icon.gmd_highlight_off).
-                backgroundColor(Color.TRANSPARENT).
-                color(Color.parseColor("#A0FF0000")).sizeDp(50);
-        button_cancel.setImageDrawable(d2);
-
-        ft_buttons_container.setVisibility(View.VISIBLE);
-        button_cancel.setVisibility(View.VISIBLE);
-
-        // TODO:
+        // --------- progress, percent, speed ---------
+        long filesize = 0;
+        int percent = 0;
+        String status = context.getString(R.string.chat_ft_receiving);
         long ft_id = message.filetransfer_id;
-        // Log.i(TAG, "getView:033:STATE:RESUME:ft_id=" + ft_id);
         if (ft_id != -1)
         {
-            final Filetransfer ft_ = (Filetransfer) orma.selectFromFiletransfer().idEq(ft_id).get(0);
-            final int percent = (int) (100f * (float) ft_.current_position / (float) ft_.filesize);
-            // Log.i(TAG, "getView:033:STATE:RESUME:percent=" + percent + " cur=" + ft_.current_position + " size=" + ft_.filesize);
-            ft_progressbar.setProgress(percent);
-            long start_ts = ft_.transfer_start_ts;
-            long now = System.currentTimeMillis();
-            long delta_ts_ms = now - start_ts;
-            if (delta_ts_ms < 1)
+            try
             {
-                delta_ts_ms = 1;
+                final Filetransfer ft_ = (Filetransfer) orma.selectFromFiletransfer().idEq(ft_id).get(0);
+                filesize = ft_.filesize;
+                if (filesize > 0)
+                {
+                    percent = (int) (100f * (float) ft_.current_position / (float) filesize);
+                }
+                percent = Math.max(0, Math.min(100, percent));
+                long delta_ts_ms = System.currentTimeMillis() - ft_.transfer_start_ts;
+                if (delta_ts_ms < 1)
+                {
+                    delta_ts_ms = 1;
+                }
+                float speed_bytes_per_second = (((float) ft_.current_position) / (float) delta_ts_ms) * 1000.0f;
+                status = status + " " + format_speed(speed_bytes_per_second);
             }
-            float speed_bytes_per_second = (((float)ft_.current_position) / (float)delta_ts_ms) * 1000.0f;
-            // TODO: make text better
-            textView.setText("" + message.text + "\n" + ft_.current_position + "/" + ft_.filesize + "\n receiving ..."+
-                             "\n" + format_speed(speed_bytes_per_second));
-            if (MESSAGE_TEXT_SIZE[PREF__global_font_size] > MESSAGE_TEXT_SIZE_FT_SMALL)
+            catch (Exception e)
             {
-                textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, MESSAGE_TEXT_SIZE_FT_SMALL);
-            }
-        }
-        else
-        {
-            ft_progressbar.setProgress(0);
-            // TODO: make text better
-            textView.setText("" + message.text + "\n receiving ...");
-            if (MESSAGE_TEXT_SIZE[PREF__global_font_size] > MESSAGE_TEXT_SIZE_FT_SMALL)
-            {
-                textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, MESSAGE_TEXT_SIZE_FT_SMALL);
+                e.printStackTrace();
             }
         }
 
         ft_progressbar.setMax(100);
-        // ft_progressbar.setIndeterminate(false);
+        ft_progressbar.setProgress(percent);
+        ft_percent.setText(percent + "%");
+        ft_file_meta.setText(ChatUI.ftTypeLabel(mimeType, filename) + " \u2022 " + ChatUI.ftSize(filesize));
+        ft_status.setText(status);
+
+        button_cancel.setVisibility(View.VISIBLE);
 
         button_cancel.setOnTouchListener(new View.OnTouchListener()
         {
@@ -267,9 +177,6 @@ public class MessageListHolder_file_incoming_state_resume extends RecyclerView.V
                     AlertDialog dialog = builder.create();
                     dialog.show();
                 }
-                else
-                {
-                }
                 return true;
             }
         });
@@ -284,7 +191,6 @@ public class MessageListHolder_file_incoming_state_resume extends RecyclerView.V
         {
             // cancel FT
             Log.i(TAG, "button_cancel:OnTouch:001");
-            // values.get(position).state = TOX_FILE_CONTROL_CANCEL.value;
             tox_file_control(tox_friend_by_public_key__wrapper(message.tox_friendpubkey),
                              get_filetransfer_filenum_from_id(message.filetransfer_id), TOX_FILE_CONTROL_CANCEL.value);
             set_filetransfer_state_from_id(message.filetransfer_id, TOX_FILE_CONTROL_CANCEL.value);
@@ -292,7 +198,6 @@ public class MessageListHolder_file_incoming_state_resume extends RecyclerView.V
 
             remove_vfs_ft_from_cache(message);
 
-            button_ok.setVisibility(View.GONE);
             button_cancel.setVisibility(View.GONE);
             ft_progressbar.setVisibility(View.GONE);
 
@@ -308,23 +213,12 @@ public class MessageListHolder_file_incoming_state_resume extends RecyclerView.V
     public void onClick(View v)
     {
         Log.i(TAG, "onClick");
-        try
-        {
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-            Log.i(TAG, "onClick:EE:" + e.getMessage());
-        }
     }
 
     @Override
     public boolean onLongClick(final View v)
     {
         Log.i(TAG, "onLongClick");
-
-        // final Message m2 = this.message;
-
         return true;
     }
 }

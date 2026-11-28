@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Ongoing outgoing file transfer, modern bubble design.
+     Original TRIfAma artwork. SPDX-License-Identifier: GPL-2.0-or-later -->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/message_entry_padding">
+
+    <LinearLayout
+        android:id="@+id/layout_message_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/message_text_date"
+        android:orientation="vertical"
+        android:padding="0dp">
+
+        <LinearLayout
+            android:id="@+id/layout1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:id="@+id/ft_outgoing_rounded_bg"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/chat_bubble_outgoing"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="280dp"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <FrameLayout
+                            android:id="@+id/ft_preview_container"
+                            android:layout_width="44dp"
+                            android:layout_height="44dp"
+                            android:background="@drawable/chat_ft_icon_tile">
+
+                            <ImageView
+                                android:id="@+id/ft_file_icon"
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                android:layout_gravity="center"
+                                android:contentDescription="@string/chat_attachment_state"
+                                android:scaleType="centerInside"
+                                android:src="@drawable/chat_ic_ft_file"
+                                android:tint="@color/chat_ft_icon" />
+
+                            <ImageButton
+                                android:id="@+id/ft_preview_image"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:background="@android:color/transparent"
+                                android:contentDescription="@string/chat_ft_preview"
+                                android:padding="0dp"
+                                android:scaleType="centerCrop"
+                                android:src="@null"
+                                android:visibility="gone" />
+                        </FrameLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginRight="8dp"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/m_text"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:ellipsize="end"
+                                android:maxLines="1"
+                                android:text="..."
+                                android:textColor="@color/chat_text"
+                                android:textSize="15sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/ft_file_meta"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="1dp"
+                                android:maxLines="1"
+                                android:text=""
+                                android:textColor="@color/chat_metadata"
+                                android:textSize="12sp" />
+                        </LinearLayout>
+
+                        <TextView
+                            android:id="@+id/ft_percent"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="8dp"
+                            android:maxLines="1"
+                            android:text="0%"
+                            android:textColor="@color/chat_metadata"
+                            android:textSize="12sp" />
+
+                        <ImageButton
+                            android:id="@+id/ft_button_cancel"
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:background="@drawable/chat_ft_cancel_bg"
+                            android:contentDescription="@string/chat_ft_cancel_transfer"
+                            android:padding="8dp"
+                            android:scaleType="fitCenter"
+                            android:src="@drawable/chat_ic_ft_cancel"
+                            android:tint="@color/chat_ft_cancel" />
+                    </LinearLayout>
+
+                    <ProgressBar
+                        android:id="@+id/ft_progressbar"
+                        style="?android:attr/progressBarStyleHorizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="6dp"
+                        android:layout_marginTop="9dp"
+                        android:max="100"
+                        android:progress="0"
+                        android:progressDrawable="@drawable/chat_ft_progress" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="7dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/ft_status"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:maxLines="1"
+                            android:text=""
+                            android:textColor="@color/chat_metadata"
+                            android:textSize="12sp" />
+
+                        <TextView
+                            android:id="@+id/date_time"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="8dp"
+                            android:maxLines="1"
+                            android:text=""
+                            android:textColor="@color/chat_metadata"
+                            android:textSize="11sp" />
+                    </LinearLayout>
+                </LinearLayout>
+            </LinearLayout>
+
+            <ImageView
+                android:id="@+id/img_corner"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginTop="14dp"
+                android:alpha="0.5"
+                android:src="@drawable/arrow_bg1"
+                android:visibility="gone" />
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/img_avatar"
+                android:layout_width="50dp"
+                android:layout_height="30dp"
+                android:layout_marginTop="0dp"
+                android:src="@drawable/user_pratikshya"
+                android:visibility="gone" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/message_text_date"
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerInParent="true"
+        android:orientation="horizontal"
+        android:visibility="visible">
+
+        <TextView
+            android:id="@+id/message_text_date_string"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:background="@drawable/rounded_date_bg"
+            android:paddingStart="@dimen/padding_small"
+            android:paddingLeft="@dimen/padding_small"
+            android:paddingTop="2dp"
+            android:paddingEnd="@dimen/padding_small"
+            android:paddingRight="@dimen/padding_small"
+            android:paddingBottom="2dp"
+            android:text="2017-05-14"
+            android:textColor="@color/message_text_date_string_color"
+            android:textSize="@dimen/text_small" />
+    </LinearLayout>
+
+</RelativeLayout>

@@ -8,4 +8,11 @@
     <color name="chat_read">@color/chat_read_dark</color>
     <color name="chat_composer">#172725</color>
     <color name="chat_input">#243A34</color>
+    <!-- Ongoing file-transfer bubble accents (night palette). -->
+    <color name="chat_ft_tile">#2A3A42</color>
+    <color name="chat_ft_icon">#70BBE6</color>
+    <color name="chat_ft_cancel">#EF9A9A</color>
+    <color name="chat_ft_cancel_bg">#24FFFFFF</color>
+    <color name="chat_ft_track">#1FFFFFFF</color>
+    <color name="chat_ft_fill">#70BBE6</color>
 </resources>

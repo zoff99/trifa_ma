@@ -123,7 +123,7 @@ public class MessagelistAdapter extends RecyclerView.Adapter implements FastScro
                                                                         false);
                 return new MessageListHolder_file_incoming_state_pause_not_yet_accepted(view, this.context);
             case Message_model.FILE_INCOMING_STATE_RESUME:
-                view = LayoutInflater.from(parent.getContext()).inflate(R.layout.message_list_ft_incoming_compact, parent,
+                view = LayoutInflater.from(parent.getContext()).inflate(R.layout.message_list_ft_incoming_ongoing, parent,
                                                                         false);
                 return new MessageListHolder_file_incoming_state_resume(view, this.context);
 
@@ -144,7 +144,7 @@ public class MessagelistAdapter extends RecyclerView.Adapter implements FastScro
                                                                         false);
                 return new MessageListHolder_file_outgoing_state_pause_not_yet_started(view, this.context);
             case Message_model.FILE_OUTGOING_STATE_RESUME:
-                view = LayoutInflater.from(parent.getContext()).inflate(R.layout.message_list_ft_outgoing_compact, parent,
+                view = LayoutInflater.from(parent.getContext()).inflate(R.layout.message_list_ft_outgoing_ongoing, parent,
                                                                         false);
                 return new MessageListHolder_file_outgoing_state_resume(view, this.context);
         }

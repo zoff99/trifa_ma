@@ -301,6 +301,49 @@ final class ChatUI
         return Math.round(c.getResources().getDisplayMetrics().density * value);
     }
 
+    /** Human-readable file size for ongoing file-transfer bubbles. */
+    static String ftSize(long bytes)
+    {
+        if (bytes < 1024) return bytes + " B";
+        if (bytes < 1024 * 1024) return String.format(Locale.US, "%.1f kB", bytes / 1024.0);
+        if (bytes < 1024L * 1024 * 1024) return String.format(Locale.US, "%.1f MB", bytes / (1024.0 * 1024));
+        return String.format(Locale.US, "%.1f GB", bytes / (1024.0 * 1024 * 1024));
+    }
+
+    /** Short type label ("PDF", "Image", ...) for ongoing file-transfer bubbles. */
+    static String ftTypeLabel(String mime, String filename)
+    {
+        if (mime != null)
+        {
+            if (mime.equals("application/pdf")) return "PDF";
+            if (mime.startsWith("image/")) return "Image";
+            if (mime.startsWith("audio/")) return "Audio";
+            if (mime.startsWith("video/")) return "Video";
+            if (mime.startsWith("text/")) return "Text";
+        }
+        try
+        {
+            final int dot = filename.lastIndexOf('.');
+            if (dot >= 0 && dot < filename.length() - 1 && filename.length() - dot <= 6)
+            {
+                return filename.substring(dot + 1).toUpperCase(Locale.US);
+            }
+        }
+        catch (Exception ignored)
+        {
+        }
+        return "File";
+    }
+
+    /** Matching original line-art icon for the file type tile. */
+    static int ftTypeIcon(String mime, String filename)
+    {
+        final String label = ftTypeLabel(mime, filename);
+        if ("PDF".equals(label)) return R.drawable.chat_ic_ft_pdf;
+        if ("Image".equals(label)) return R.drawable.chat_ic_ft_image;
+        return R.drawable.chat_ic_ft_file;
+    }
+
     static String time(Context c, long millis)
     {
         if (millis <= 0) return "";
