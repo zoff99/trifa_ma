@@ -347,21 +347,29 @@ final class ChatUI
             header.setTag("pm_header");
             header.setOrientation(LinearLayout.HORIZONTAL);
             header.setGravity(android.view.Gravity.CENTER_VERTICAL);
-            header.setPadding(0, 0, 0, dp(c, 2));
+            header.setPadding(0, 0, 0, dp(c, 3));
+            // Lock + "To" + peer name share the same rounded chip that
+            // regular group messages use for the peer name.
+            final LinearLayout chip = new LinearLayout(c);
+            chip.setTag("pm_chip");
+            chip.setOrientation(LinearLayout.HORIZONTAL);
+            chip.setGravity(android.view.Gravity.CENTER_VERTICAL);
             final ImageView lockView = new ImageView(c);
             lockView.setTag("pm_lock");
             lockView.setImageResource(R.drawable.chat_ic_private_lock);
             lockView.setContentDescription(c.getString(R.string.chat_private_message));
             final LinearLayout.LayoutParams lockLp = new LinearLayout.LayoutParams(dp(c, 12), dp(c, 12));
             lockLp.rightMargin = dp(c, 5);
-            header.addView(lockView, lockLp);
+            chip.addView(lockView, lockLp);
             final TextView toView = new TextView(c);
             toView.setTag("pm_to");
             toView.setText(R.string.chat_private_to);
             toView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 11.5f);
             toView.setMaxLines(1);
-            header.addView(toView, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
-                             ViewGroup.LayoutParams.WRAP_CONTENT));
+            final LinearLayout.LayoutParams toLp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT);
+            toLp.rightMargin = dp(c, 4);
+            chip.addView(toView, toLp);
             final TextView nameView = new TextView(c);
             nameView.setTag("pm_name");
             nameView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12.5f);
@@ -369,7 +377,9 @@ final class ChatUI
             nameView.setMaxLines(1);
             nameView.setEllipsize(android.text.TextUtils.TruncateAt.END);
             nameView.setMaxWidth(dp(c, 170));
-            header.addView(nameView, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+            chip.addView(nameView, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+                             ViewGroup.LayoutParams.WRAP_CONTENT));
+            header.addView(chip, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
                              ViewGroup.LayoutParams.WRAP_CONTENT));
             final TextView idView = new TextView(c);
             idView.setTag("pm_id");
@@ -383,11 +393,26 @@ final class ChatUI
             bubble.addView(header, 0);
         }
         header.setVisibility(View.VISIBLE);
-        ((ImageView) header.findViewWithTag("pm_lock")).setColorFilter(peerColor);
-        final TextView toView = (TextView) header.findViewWithTag("pm_to");
+        final LinearLayout chip = (LinearLayout) header.findViewWithTag("pm_chip");
+        if (!night(c))
+        {
+            final GradientDrawable chipBg = new GradientDrawable();
+            chipBg.setShape(GradientDrawable.RECTANGLE);
+            chipBg.setCornerRadius(dp(c, 9));
+            chipBg.setColor(color(c, R.color.chat_peer_chip));
+            chip.setBackground(chipBg);
+            chip.setPadding(dp(c, 7), dp(c, 2), dp(c, 7), dp(c, 3));
+        }
+        else
+        {
+            chip.setBackground(null);
+            chip.setPadding(0, 0, 0, 0);
+        }
+        ((ImageView) chip.findViewWithTag("pm_lock")).setColorFilter(peerColor);
+        final TextView toView = (TextView) chip.findViewWithTag("pm_to");
         toView.setVisibility(outgoing ? View.VISIBLE : View.GONE);
         toView.setTextColor(meta);
-        final TextView nameView = (TextView) header.findViewWithTag("pm_name");
+        final TextView nameView = (TextView) chip.findViewWithTag("pm_name");
         nameView.setText(name);
         nameView.setTextColor(peerColor);
         final TextView idView = (TextView) header.findViewWithTag("pm_id");
