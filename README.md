@@ -29,6 +29,3 @@ Startup Test Automated Screenshots
 <img src="https://github.com/zoff99/trifa_ma/releases/download/nightly/android_screen01_21.png" width="120">&nbsp;<img src="https://github.com/zoff99/trifa_ma/releases/download/nightly/android_screen01_29.png" width="120">&nbsp;<img src="https://github.com/zoff99/trifa_ma/releases/download/nightly/android_screen01_33.png" width="120">&nbsp;<img src="https://github.com/zoff99/trifa_ma/releases/download/nightly/android_screen01_35.png" width="120">
 
 
-## Main list redesign
-
-See `docs/MAIN_LIST_REDESIGN.md` for the main friend/conference/group list restyle.
