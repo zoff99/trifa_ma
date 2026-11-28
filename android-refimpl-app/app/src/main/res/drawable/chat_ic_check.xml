@@ -1,1 +1,15 @@
-<vector xmlns:android="http://schemas.android.com/apk/res/android" android:width="24dp" android:height="24dp" android:viewportWidth="24" android:viewportHeight="24"><path android:fillColor="#FFFFFFFF" android:pathData="M4,12l5,5L20,6l-1.5,-1.5L9,14l-3.5,-3.5z"/></vector>
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Original TRIfAma receipt artwork. SPDX-License-Identifier: GPL-2.0-or-later -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <!-- Bold rounded single check, matched to the double-read receipt style. -->
+    <path
+        android:pathData="M5.05,13 L9.25,17.2 L19.85,6.8"
+        android:strokeColor="#FFFFFFFF"
+        android:strokeWidth="2.7"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round" />
+</vector>
