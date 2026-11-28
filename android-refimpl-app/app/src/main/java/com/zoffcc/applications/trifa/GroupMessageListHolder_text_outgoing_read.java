@@ -145,58 +145,9 @@ public class GroupMessageListHolder_text_outgoing_read extends RecyclerView.View
     {
         message_ = m;
 
+        // Private messages are marked visually by ChatUI.bindPrivateGroup
+        // (accent bar + lock + recipient header), not by a text prefix.
         String message__text = m.text;
-
-        if (m.private_message == 1)
-        {
-            try
-            {
-                if ((m.sent_privately_to_tox_group_peer_pubkey == null) ||
-                    (m.sent_privately_to_tox_group_peer_pubkey.length() < 10))
-                {
-                    message__text = "Private Message to " + "*unknown*" + ":\n" + m.text;
-                }
-                else
-                {
-                    String display_peer_name = "*unknown*";
-
-                    try
-                    {
-                        String peer_name_pubkey_part = m.sent_privately_to_tox_group_peer_pubkey.substring(
-                                (m.sent_privately_to_tox_group_peer_pubkey.length() - 6),
-                                m.sent_privately_to_tox_group_peer_pubkey.length());
-
-
-                        String peer_name_name_part = tox_group_peer_get_name__wrapper(m.group_identifier,
-                                                                                      m.sent_privately_to_tox_group_peer_pubkey);
-
-                        if (peer_name_name_part == null)
-                        {
-                            peer_name_name_part = display_peer_name;
-                        }
-                        else
-                        {
-                            if (peer_name_name_part.equals("-1"))
-                            {
-                                peer_name_name_part = display_peer_name;
-                            }
-                        }
-
-                        display_peer_name = peer_name_name_part + " / " + peer_name_pubkey_part;
-                    }
-                    catch (Exception e)
-                    {
-                        e.printStackTrace();
-                    }
-
-                    message__text = "Private Message to " + display_peer_name + ":\n" + m.text;
-                }
-            }
-            catch (Exception e)
-            {
-                message__text = "Private Message to " + "*unknown*" + ":\n" + m.text;
-            }
-        }
 
         textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, MESSAGE_TEXT_SIZE[PREF__global_font_size]);
 

@@ -169,12 +169,9 @@ public class GroupMessageListHolder_text_incoming_not_read extends RecyclerView.
     {
         message_ = m;
 
+        // Private messages are marked visually by ChatUI.bindPrivateGroup
+        // (accent bar + lock header), not by a text prefix.
         String message__text = m.text;
-
-        if (m.private_message == 1)
-        {
-            message__text = "Private Message:\n" + m.text;
-        }
 
         if (m.tox_group_peer_role == ToxVars.Tox_Group_Role.TOX_GROUP_ROLE_FOUNDER.value)
         {
@@ -210,10 +207,6 @@ public class GroupMessageListHolder_text_incoming_not_read extends RecyclerView.
                 message__tox_peername = res.tox_peername;
                 peer_name_text.setText(message__tox_peername);
                 message__text = res.text;
-                if (m.private_message == 1)
-                {
-                    message__text = "Private Message:\n" + res.text;
-                }
                 message__tox_peerpubkey = res.tox_peerpubkey;
                 handle_special_name = true;
             }

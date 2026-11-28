@@ -68,6 +68,8 @@
     <string name="chat_ft_receiving">Receiving\u2026</string>
     <string name="chat_ft_cancel_transfer">Cancel file transfer</string>
     <string name="chat_ft_preview">File preview</string>
+    <string name="chat_private_to">To </string>
+    <string name="chat_private_message">Private message</string>
     <string name="chat_quote_hint">Replying to message</string>
     <string name="chat_audio_permission_needed">Microphone permission is needed to record audio messages</string>
     <string name="chat_audio_temp_dir_failed">Could not create the audio recording folder</string>

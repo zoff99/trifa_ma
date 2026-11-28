@@ -301,6 +301,125 @@ final class ChatUI
         return Math.round(c.getResources().getDisplayMetrics().density * value);
     }
 
+    /**
+     * Concept B styling for private messages inside group chats: a slim
+     * peer-colored accent bar on the bubble edge plus a lock + peer name +
+     * short peer id header line. Outgoing bubbles name the recipient.
+     * Safe on recycled rows: injected views are tagged and reused, and
+     * hidden again for non-private messages.
+     */
+    static void bindPrivateGroup(View row, com.zoffcc.applications.sorm.GroupMessage m, boolean outgoing)
+    {
+        final Context c = row.getContext();
+        final ViewGroup bubble = (ViewGroup) row.findViewById(outgoing ? R.id.text_block_group : R.id.m_container);
+        final ViewGroup container = (ViewGroup) row.findViewById(R.id.layout_message_container);
+        if (bubble == null || container == null) return;
+        LinearLayout header = (LinearLayout) bubble.findViewWithTag("pm_header");
+        View bar = container.findViewWithTag("pm_bar");
+        if (m == null || m.private_message != 1)
+        {
+            if (header != null) header.setVisibility(View.GONE);
+            if (bar != null) bar.setVisibility(View.GONE);
+            return;
+        }
+        String pubkey = outgoing ? m.sent_privately_to_tox_group_peer_pubkey : m.tox_group_peer_pubkey;
+        if (pubkey == null) pubkey = "";
+        String name = null;
+        try
+        {
+            name = HelperGroup.tox_group_peer_get_name__wrapper(m.group_identifier, pubkey);
+        }
+        catch (Exception ignored)
+        {
+        }
+        if (name == null || name.length() == 0 || name.equals("-1"))
+        {
+            name = (!outgoing && m.tox_group_peername != null && m.tox_group_peername.length() > 0)
+                    ? m.tox_group_peername : "*unknown*";
+        }
+        final String shortId = pubkey.length() >= 6 ? pubkey.substring(pubkey.length() - 6) : pubkey;
+        final int peerColor = senderColor(c, pubkey);
+        final int meta = metadataColor(c);
+
+        if (header == null)
+        {
+            header = new LinearLayout(c);
+            header.setTag("pm_header");
+            header.setOrientation(LinearLayout.HORIZONTAL);
+            header.setGravity(android.view.Gravity.CENTER_VERTICAL);
+            header.setPadding(0, 0, 0, dp(c, 2));
+            final ImageView lockView = new ImageView(c);
+            lockView.setTag("pm_lock");
+            lockView.setImageResource(R.drawable.chat_ic_private_lock);
+            lockView.setContentDescription(c.getString(R.string.chat_private_message));
+            final LinearLayout.LayoutParams lockLp = new LinearLayout.LayoutParams(dp(c, 12), dp(c, 12));
+            lockLp.rightMargin = dp(c, 5);
+            header.addView(lockView, lockLp);
+            final TextView toView = new TextView(c);
+            toView.setTag("pm_to");
+            toView.setText(R.string.chat_private_to);
+            toView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 11.5f);
+            toView.setMaxLines(1);
+            header.addView(toView, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+                             ViewGroup.LayoutParams.WRAP_CONTENT));
+            final TextView nameView = new TextView(c);
+            nameView.setTag("pm_name");
+            nameView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12.5f);
+            nameView.setTypeface(Typeface.DEFAULT_BOLD);
+            nameView.setMaxLines(1);
+            nameView.setEllipsize(android.text.TextUtils.TruncateAt.END);
+            nameView.setMaxWidth(dp(c, 170));
+            header.addView(nameView, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+                             ViewGroup.LayoutParams.WRAP_CONTENT));
+            final TextView idView = new TextView(c);
+            idView.setTag("pm_id");
+            idView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 9.5f);
+            idView.setTypeface(Typeface.MONOSPACE);
+            idView.setMaxLines(1);
+            final LinearLayout.LayoutParams idLp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT);
+            idLp.leftMargin = dp(c, 6);
+            header.addView(idView, idLp);
+            bubble.addView(header, 0);
+        }
+        header.setVisibility(View.VISIBLE);
+        ((ImageView) header.findViewWithTag("pm_lock")).setColorFilter(peerColor);
+        final TextView toView = (TextView) header.findViewWithTag("pm_to");
+        toView.setVisibility(outgoing ? View.VISIBLE : View.GONE);
+        toView.setTextColor(meta);
+        final TextView nameView = (TextView) header.findViewWithTag("pm_name");
+        nameView.setText(name);
+        nameView.setTextColor(peerColor);
+        final TextView idView = (TextView) header.findViewWithTag("pm_id");
+        idView.setText("\u00b7 " + shortId.toUpperCase(Locale.ROOT));
+        idView.setTextColor(meta);
+
+        if (bar == null)
+        {
+            bar = new View(c);
+            bar.setTag("pm_bar");
+            final int idx = container.indexOfChild(bubble);
+            container.addView(bar, outgoing ? idx + 1 : idx);
+        }
+        bar.setVisibility(View.VISIBLE);
+        final GradientDrawable barBg = new GradientDrawable();
+        barBg.setShape(GradientDrawable.RECTANGLE);
+        barBg.setCornerRadius(dp(c, 2));
+        barBg.setColor(peerColor);
+        bar.setBackground(barBg);
+        final LinearLayout.LayoutParams barLp = new LinearLayout.LayoutParams(dp(c, 4),
+                ViewGroup.LayoutParams.MATCH_PARENT);
+        barLp.topMargin = dp(c, 6);
+        barLp.bottomMargin = dp(c, 6);
+        if (outgoing) barLp.leftMargin = dp(c, 2);
+        else barLp.rightMargin = dp(c, 2);
+        bar.setLayoutParams(barLp);
+
+        // The in-bubble header replaces the legacy peer name row.
+        final View peerRow = row.findViewById(R.id.layout_peer_name_container);
+        if (peerRow != null) peerRow.setVisibility(View.GONE);
+    }
+
     /** Human-readable file size for ongoing file-transfer bubbles. */
     static String ftSize(long bytes)
     {
