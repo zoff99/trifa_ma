@@ -501,8 +501,9 @@ final class ChatUI
                 p.width = ViewGroup.LayoutParams.WRAP_CONTENT;
                 // Text rows already have 8dp horizontal surface padding. File
                 // rows do not, so keep file bubbles off the aligned screen edge.
-                final int edge = !text ? dp(c, 8) : 0;
-                p.setMargins(dp(c, outgoing ? 48 : edge), 0, dp(c, outgoing ? edge : 48), 0);
+                // Keep this value in dp and convert it only once below.
+                final int edgeDp = !text ? 8 : 0;
+                p.setMargins(dp(c, outgoing ? 48 : edgeDp), 0, dp(c, outgoing ? edgeDp : 48), 0);
                 bubble.setLayoutParams(p);
             }
         }
